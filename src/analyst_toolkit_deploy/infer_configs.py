@@ -204,9 +204,9 @@ def infer_configs(
     input_csv = input_path or _find_entry_csv(root)
     rel_path = os.path.relpath(input_csv, root)
 
-    read_kwargs = dict(low_memory=False)
-    if sample_rows:
-        read_kwargs["nrows"] = sample_rows
+    read_kwargs: Dict[str, Any] = {"low_memory": False}
+    if sample_rows is not None:
+        read_kwargs["nrows"] = int(sample_rows)
     df = pd.read_csv(input_csv, **read_kwargs)
     # Apply hints
     datetime_hints = datetime_hints or []

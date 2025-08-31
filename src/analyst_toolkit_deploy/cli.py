@@ -11,7 +11,7 @@ functions to keep command parsing and business logic cleanly separated.
 """
 
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Literal
 
 import typer
 from rich import print
@@ -36,7 +36,7 @@ def deploy_cmd(
         dir_okay=True,
         help="Project root to scaffold into (will be created)",
     ),
-    env: str = typer.Option(
+    env: Literal["conda", "venv", "none"] = typer.Option(
         "none",
         help="Environment mode: conda|venv|none",
     ),
@@ -52,7 +52,7 @@ def deploy_cmd(
         "auto",
         help="Dataset wiring: auto|prompt|<path>",
     ),
-    ingest: str = typer.Option(
+    ingest: Literal["move", "copy", "none"] = typer.Option(
         "copy",
         help="Ingest policy for root CSV: move|copy|none",
     ),
@@ -68,7 +68,7 @@ def deploy_cmd(
         "",
         help="Project name for README / notebook injection",
     ),
-    vscode_ai: str = typer.Option(
+    vscode_ai: Literal["gemini", "codex", "off"] = typer.Option(
         "gemini",
         help="Inline suggestion provider: gemini|codex|off",
     ),

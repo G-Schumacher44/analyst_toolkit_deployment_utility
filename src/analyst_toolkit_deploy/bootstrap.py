@@ -11,18 +11,20 @@ import shutil
 from pathlib import Path
 from typing import Optional, Literal
 try:
-    from rich import print  # type: ignore
-    from rich.console import Console  # type: ignore
-    from rich.prompt import Prompt  # type: ignore
+    from rich import print
+    from rich.console import Console
+    from rich.prompt import Prompt
 except Exception:  # minimal fallback if rich is unavailable
-    def print(*args, **kwargs):  # type: ignore
-        __builtins__["print"](*args)
+    import builtins as _builtins
 
-    class Console:  # type: ignore
+    def print(*args, **kwargs):
+        _builtins.print(*args)
+
+    class Console:
         def print(self, *args, **kwargs):
-            __builtins__["print"](*args)
+            _builtins.print(*args)
 
-    class Prompt:  # type: ignore
+    class Prompt:
         @staticmethod
         def ask(msg, choices=None, default=None):
             return default if default is not None else (choices[0] if choices else "")
