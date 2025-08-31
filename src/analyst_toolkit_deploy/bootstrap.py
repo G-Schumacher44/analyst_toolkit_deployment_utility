@@ -27,13 +27,13 @@ class _PrintProto(Protocol):
         ...
 
 try:
-    from rich import print as _rich_print
-    from rich.console import Console as _RichConsole
-    from rich.prompt import Prompt as _RichPrompt
+    from rich import print as _print
+    from rich.console import Console as _Console
+    from rich.prompt import Prompt as _Prompt
 except Exception:  # minimal fallback if rich is unavailable
     import builtins as _builtins
 
-    def _fallback_print(
+    def _print(
         *objects: Any,
         sep: str = " ",
         end: str = "\n",
@@ -42,7 +42,7 @@ except Exception:  # minimal fallback if rich is unavailable
     ) -> None:
         _builtins.print(*objects, sep=sep, end=end, file=file, flush=flush)
 
-    class _FallbackConsole:
+    class _Console:
         def print(
             self,
             *objects: Any,
@@ -53,19 +53,15 @@ except Exception:  # minimal fallback if rich is unavailable
         ) -> None:
             _builtins.print(*objects, sep=sep, end=end, file=file, flush=flush)
 
-    class _FallbackPrompt:
+    class _Prompt:
         @staticmethod
         def ask(msg, choices=None, default=None):
             return default if default is not None else (choices[0] if choices else "")
 
-    _rich_print = _fallback_print  # type: ignore[assignment]
-    _RichConsole = _FallbackConsole  # type: ignore[assignment]
-    _RichPrompt = _FallbackPrompt  # type: ignore[assignment]
-
 # Public names used by the module
-print: _PrintProto = _rich_print  # type: ignore[assignment]
-Console = _RichConsole
-Prompt = _RichPrompt
+print: _PrintProto = _print
+Console = _Console
+Prompt = _Prompt
 
 from .utils import ensure_dir, copy_file, update_yaml_key, run, conda_exists, register_ipykernel, is_interactive
 from . import infer_configs as ic
