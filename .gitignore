@@ -21,6 +21,9 @@ env/
 # Local env
 .env
 
+# Editor (ignore only root VS Code settings; keep template copies)
+/.vscode/
+
 # Data and exports (tracked via gitkeep/README only)
 data/**
 !data/**/.gitkeep
