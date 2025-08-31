@@ -100,7 +100,7 @@ python -m analyst_toolkit.run_toolkit_pipeline --config config/run_toolkit_confi
 ---
 
 <p align="center">
-  <a href="README.md">🏠 <b>Main README</b></a>
+  <a href="../README.md">🏠 <b>Main README</b></a>
   &nbsp;·&nbsp;
   <a href="deployment_guide.md">🚀 <b>Project Deployment Guide</b></a>
   &nbsp;·&nbsp;

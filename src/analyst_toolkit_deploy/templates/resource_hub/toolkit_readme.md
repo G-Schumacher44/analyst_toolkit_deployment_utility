@@ -312,7 +312,7 @@ Generative AI tools (Gemini 2.5-PRO, ChatGPT 4o - 4.1) were used throughout this
 This project is licensed under the [MIT License](LICENSE).
 
 <p align="center">
-  <a href="README.md">🏠 <b>Main README</b></a>
+  <a href="../README.md">🏠 <b>Main README</b></a>
   &nbsp;·&nbsp;
   <a href="deployment_guide.md">🚀 <b>Project Deployment Guide</b></a>
   &nbsp;·&nbsp;

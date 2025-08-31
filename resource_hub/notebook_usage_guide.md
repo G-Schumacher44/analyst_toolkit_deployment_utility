@@ -266,7 +266,7 @@ Let us know if you’d like module-by-module walkthroughs or demo notebooks.
 ___
 
 <p align="center">
-  <a href="README.md">🏠 <b>Main README</b></a>
+  <a href="../README.md">🏠 <b>Main README</b></a>
   &nbsp;·&nbsp;
   <a href="deployment_guide.md">🚀 <b>Project Deployment Guide</b></a>
   &nbsp;·&nbsp;
