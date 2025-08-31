@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 """Typer-powered CLI entrypoints.
 
 Exposes two commands:
@@ -19,25 +20,74 @@ from .bootstrap import bootstrap
 from . import infer_configs as ic
 
 
-app = typer.Typer(add_completion=False, no_args_is_help=True, help="Analyst Toolkit deployment utilities")
+app = typer.Typer(
+    add_completion=False,
+    no_args_is_help=True,
+    help="Analyst Toolkit deployment utilities",
+)
 
 
 @app.command("deploy")
 def deploy_cmd(
-    target: Path = typer.Option(Path("."), exists=False, file_okay=False, dir_okay=True, help="Project root to scaffold into (will be created)"),
-    env: str = typer.Option("none", help="Environment mode: conda|venv|none"),
-    name: str = typer.Option("analyst-toolkit", help="Environment name (and default kernel name)"),
-    kernel_name: Optional[str] = typer.Option(None, help="Jupyter kernel display name"),
-    dataset: str = typer.Option("auto", help="Dataset wiring: auto|prompt|<path>"),
-    ingest: str = typer.Option("copy", help="Ingest policy for root CSV: move|copy|none"),
-    copy_notebook: bool = typer.Option(True, help="Copy the starter notebook if bundled"),
-    generate_configs: bool = typer.Option(False, help="Generate inferred config YAMLs"),
-    project_name: str = typer.Option("", help="Project name for README / notebook injection"),
-    vscode_ai: str = typer.Option("gemini", help="Inline suggestion provider: gemini|codex|off"),
-    reuse_env: bool = typer.Option(True, help="Reuse existing env if found (conda)"),
-    force_recreate: bool = typer.Option(False, help="Recreate env (conda/venv) if exists"),
-    force_copy: bool = typer.Option(True, help="Overwrite existing template files"),
-    run_smoke: bool = typer.Option(False, help="Print recommended smoke test command"),
+    target: Path = typer.Option(
+        Path("."),
+        exists=False,
+        file_okay=False,
+        dir_okay=True,
+        help="Project root to scaffold into (will be created)",
+    ),
+    env: str = typer.Option(
+        "none",
+        help="Environment mode: conda|venv|none",
+    ),
+    name: str = typer.Option(
+        "analyst-toolkit",
+        help="Environment name (and default kernel name)",
+    ),
+    kernel_name: Optional[str] = typer.Option(
+        None,
+        help="Jupyter kernel display name",
+    ),
+    dataset: str = typer.Option(
+        "auto",
+        help="Dataset wiring: auto|prompt|<path>",
+    ),
+    ingest: str = typer.Option(
+        "copy",
+        help="Ingest policy for root CSV: move|copy|none",
+    ),
+    copy_notebook: bool = typer.Option(
+        True,
+        help="Copy the starter notebook if bundled",
+    ),
+    generate_configs: bool = typer.Option(
+        False,
+        help="Generate inferred config YAMLs",
+    ),
+    project_name: str = typer.Option(
+        "",
+        help="Project name for README / notebook injection",
+    ),
+    vscode_ai: str = typer.Option(
+        "gemini",
+        help="Inline suggestion provider: gemini|codex|off",
+    ),
+    reuse_env: bool = typer.Option(
+        True,
+        help="Reuse existing env if found (conda)",
+    ),
+    force_recreate: bool = typer.Option(
+        False,
+        help="Recreate env (conda/venv) if exists",
+    ),
+    force_copy: bool = typer.Option(
+        True,
+        help="Overwrite existing template files",
+    ),
+    run_smoke: bool = typer.Option(
+        False,
+        help="Print recommended smoke test command",
+    ),
 ):
     """Scaffold a project and (optionally) set up env/kernel + configs.
 

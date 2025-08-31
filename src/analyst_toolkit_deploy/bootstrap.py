@@ -45,7 +45,13 @@ def _pkg_path(rel: str) -> Optional[Path]:
         return None
 
 
-def _copy_templates(target_root: Path, force: bool, project_name: str, vscode_ai: str, copy_notebook: bool) -> None:
+def _copy_templates(
+    target_root: Path,
+    force: bool,
+    project_name: str,
+    vscode_ai: str,
+    copy_notebook: bool,
+) -> None:
     """Copy templates into target and inject project/license details where applicable."""
     # Ensure dirs
     for p in [
@@ -68,7 +74,9 @@ def _copy_templates(target_root: Path, force: bool, project_name: str, vscode_ai
             dst = target_root / "config" / src.name
             copy_file(src, dst, overwrite=force)
     else:
-        console.print("[yellow]No packaged templates found; skipping config copy[/yellow]")
+        console.print(
+            "[yellow]No packaged templates found; skipping config copy[/yellow]"
+        )
 
     # .env template
     env_tmpl = _pkg_path("templates/.env.template")
@@ -78,7 +86,11 @@ def _copy_templates(target_root: Path, force: bool, project_name: str, vscode_ai
             copy_file(env_tmpl, dst, overwrite=True)
 
     # environment.yml / requirements.txt / .gitignore
-    for rel in ["templates/environment.yml", "templates/requirements.txt", "templates/.gitignore"]:
+    for rel in [
+        "templates/environment.yml",
+        "templates/requirements.txt",
+        "templates/.gitignore",
+    ]:
         src = _pkg_path(rel)
         if src and src.exists():
             copy_file(src, target_root / Path(rel).name, overwrite=force)
@@ -103,7 +115,9 @@ def _copy_templates(target_root: Path, force: bool, project_name: str, vscode_ai
             txt = readme_dst.read_text(encoding="utf-8")
             pattern = r"^## \((?:Title Placeholder)\)"
             if re.search(pattern, txt, flags=re.M):
-                txt = re.sub(pattern, f"## {effective_name}", txt, count=1, flags=re.M)
+                txt = re.sub(
+                    pattern, f"## {effective_name}", txt, count=1, flags=re.M
+                )
             else:
                 # Fallback simple replace once
                 txt = txt.replace("## (Title Placeholder)", f"## {effective_name}", 1)
@@ -136,12 +150,28 @@ def _copy_templates(target_root: Path, force: bool, project_name: str, vscode_ai
             txt = lic_dst.read_text(encoding="utf-8")
             # Replace or insert year
             if re.search(r"Copyright \(c\) \d{4}", txt):
-                txt = re.sub(r"Copyright \(c\) \d{4}", f"Copyright (c) {year}", txt, count=1)
+                txt = re.sub(
+                    r"Copyright \(c\) \d{4}",
+                    f"Copyright (c) {year}",
+                    txt,
+                    count=1,
+                )
             else:
-                txt = re.sub(r"^MIT License\n", f"MIT License\n\nCopyright (c) {year}\n", txt, count=1, flags=re.M)
+                txt = re.sub(
+                    r"^MIT License\n",
+                    f"MIT License\n\nCopyright (c) {year}\n",
+                    txt,
+                    count=1,
+                    flags=re.M,
+                )
             # Optionally append author after year if provided
             if author:
-                txt = re.sub(r"(Copyright \(c\) \d{4})(\n)", rf"\1 {author}\2", txt, count=1)
+                txt = re.sub(
+                    r"(Copyright \(c\) \d{4})(\n)",
+                    rf"\1 {author}\2",
+                    txt,
+                    count=1,
+                )
             lic_dst.write_text(txt, encoding="utf-8")
         except Exception:
             pass
@@ -161,13 +191,19 @@ def _copy_templates(target_root: Path, force: bool, project_name: str, vscode_ai
             copy_file(nb, target_root / "notebooks" / "toolkit_template.ipynb", overwrite=force)
         else:
             # Fallback: if running from the original bundle, copy notebook from workspace
-            workspace_nb = Path.cwd() / "deploy_toolkit" / "templates" / "toolkit_template.ipynb"
+            workspace_nb = (
+                Path.cwd() / "deploy_toolkit" / "templates" / "toolkit_template.ipynb"
+            )
             if workspace_nb.exists():
                 copy_file(workspace_nb, target_root / "notebooks" / "toolkit_template.ipynb", overwrite=force)
             else:
-                console.print("[yellow]Notebook template not found; skipping[/yellow]")
+                console.print(
+                    "[yellow]Notebook template not found; skipping[/yellow]"
+                )
     else:
-        console.print("[yellow]Notebook copy disabled via --copy-notebook False[/yellow]")
+        console.print(
+            "[yellow]Notebook copy disabled via --copy-notebook False[/yellow]"
+        )
 
     # Resource hub documentation (prefer packaged; fallback to workspace tool_kit_resources)
     docs_dst = target_root / "resource_hub"
@@ -186,9 +222,12 @@ def _copy_templates(target_root: Path, force: bool, project_name: str, vscode_ai
             try:
                 links = "\n".join(f"- {name}" for name in sorted(copied))
                 hub_readme.write_text(
-                    "Resource Hub\n\n" +
-                    "Curated documentation for the scaffolded project.\n\n" +
-                    links + "\n",
+                    (
+                        "Resource Hub\n\n"
+                        + "Curated documentation for the scaffolded project.\n\n"
+                        + links
+                        + "\n"
+                    ),
                     encoding="utf-8",
                 )
             except Exception:
@@ -252,12 +291,16 @@ def _wire_dataset(
             console.print("[yellow]Multiple or no CSVs found; skipping dataset wiring[/yellow]")
             return None
     elif dataset == "prompt":
-        opts = sorted((target_root / "data" / "raw").glob("*.csv")) + sorted(target_root.glob("*.csv"))
+        opts = sorted((target_root / "data" / "raw").glob("*.csv")) + sorted(
+            target_root.glob("*.csv")
+        )
         if not opts:
             console.print("[yellow]No CSVs found to select[/yellow]")
             return None
         if not is_interactive():
-            console.print("[yellow]Non-interactive environment: supply --dataset <path>[/yellow]")
+            console.print(
+                "[yellow]Non-interactive environment: supply --dataset <path>[/yellow]"
+            )
             return None
         choice = Prompt.ask(
             "Select dataset index",
@@ -299,7 +342,13 @@ def _wire_dataset(
     return chosen
 
 
-def _persist_env_defaults(target_root: Path, env_name: str, kernel_name: str, project_name: str, vscode_ai: str) -> None:
+def _persist_env_defaults(
+    target_root: Path,
+    env_name: str,
+    kernel_name: str,
+    project_name: str,
+    vscode_ai: str,
+) -> None:
     envf = target_root / ".env"
     envf.touch(exist_ok=True)
     text = envf.read_text(encoding="utf-8") if envf.exists() else ""
@@ -332,7 +381,11 @@ def _setup_conda(target_root: Path, env_name: str, kernel_name: str, reuse: bool
     try:
         import subprocess
         out = subprocess.check_output(["conda", "env", "list"], text=True)
-        exists = any(line.split()[0] == env_name for line in out.splitlines() if line and not line.startswith("#"))
+        exists = any(
+            line.split()[0] == env_name
+            for line in out.splitlines()
+            if line and not line.startswith("#")
+        )
     except Exception:
         pass
 
@@ -346,19 +399,65 @@ def _setup_conda(target_root: Path, env_name: str, kernel_name: str, reuse: bool
     else:
         env_yml = target_root / "environment.yml"
         if env_yml.exists():
-            console.print(f"[green]Creating conda env from environment.yml:[/green] {env_name}")
-            run(["conda", "env", "create", "-f", str(env_yml), "-n", env_name], check=False)
+            console.print(
+                f"[green]Creating conda env from environment.yml:[/green] {env_name}"
+            )
+            run(
+                ["conda", "env", "create", "-f", str(env_yml), "-n", env_name],
+                check=False,
+            )
             # fallback to update if create failed
-            run(["conda", "env", "update", "-f", str(env_yml), "-n", env_name], check=False)
+            run(
+                ["conda", "env", "update", "-f", str(env_yml), "-n", env_name],
+                check=False,
+            )
         else:
             console.print(f"[green]Creating conda env:[/green] {env_name}")
-            run(["conda", "create", "-y", "-n", env_name, "python=3.10"], check=False)
+            run([
+                "conda",
+                "create",
+                "-y",
+                "-n",
+                env_name,
+                "python=3.10",
+            ], check=False)
             req = target_root / "requirements.txt"
             if req.exists():
-                run(["conda", "run", "-n", env_name, "python", "-m", "pip", "install", "-r", str(req)], check=False)
+                run(
+                    [
+                        "conda",
+                        "run",
+                        "-n",
+                        env_name,
+                        "python",
+                        "-m",
+                        "pip",
+                        "install",
+                        "-r",
+                        str(req),
+                    ],
+                    check=False,
+                )
 
     # Register kernel
-    run(["conda", "run", "-n", env_name, "python", "-m", "ipykernel", "install", "--user", "--name", env_name, "--display-name", kernel_name], check=False)
+    run(
+        [
+            "conda",
+            "run",
+            "-n",
+            env_name,
+            "python",
+            "-m",
+            "ipykernel",
+            "install",
+            "--user",
+            "--name",
+            env_name,
+            "--display-name",
+            kernel_name,
+        ],
+        check=False,
+    )
 
 
 def _setup_venv(target_root: Path, env_name: str, kernel_name: str, force_recreate: bool) -> None:
@@ -368,14 +467,18 @@ def _setup_venv(target_root: Path, env_name: str, kernel_name: str, force_recrea
     if not venv_dir.exists():
         run(["python", "-m", "venv", str(venv_dir)], check=False)
         bin_dir = "Scripts" if os.name == "nt" else "bin"
-        py_exec = venv_dir / bin_dir / ("python.exe" if os.name == "nt" else "python")
+        py_exec = venv_dir / bin_dir / (
+            "python.exe" if os.name == "nt" else "python"
+        )
         run([str(py_exec), "-m", "pip", "install", "--upgrade", "pip"], check=False)
         req = target_root / "requirements.txt"
         if req.exists():
             run([str(py_exec), "-m", "pip", "install", "-r", str(req)], check=False)
     # Register kernel
     bin_dir = "Scripts" if os.name == "nt" else "bin"
-    py_exec = venv_dir / bin_dir / ("python.exe" if os.name == "nt" else "python")
+    py_exec = venv_dir / bin_dir / (
+        "python.exe" if os.name == "nt" else "python"
+    )
     register_ipykernel(env_name, kernel_name, py_exec)
 
 
@@ -409,7 +512,13 @@ def bootstrap(
 
     if env == "conda":
         console.print("[bold]Setting up Conda environment[/bold]")
-        _setup_conda(target, name, kernel_name, reuse=reuse_env, force_recreate=force_recreate)
+        _setup_conda(
+            target,
+            name,
+            kernel_name,
+            reuse=reuse_env,
+            force_recreate=force_recreate,
+        )
     elif env == "venv":
         console.print("[bold]Setting up venv[/bold]")
         _setup_venv(target, name, kernel_name, force_recreate=force_recreate)
@@ -419,12 +528,18 @@ def bootstrap(
     if generate_configs:
         console.print("[bold]Generating suggested configs[/bold]")
         try:
-            outdir = ic.infer_configs(str(target), input_path=str(chosen) if chosen else None)
-            console.print(f"[green]Generated configs:[/green] {Path(outdir).relative_to(target)}")
+            outdir = ic.infer_configs(
+                str(target), input_path=str(chosen) if chosen else None
+            )
+            console.print(
+                f"[green]Generated configs:[/green] {Path(outdir).relative_to(target)}"
+            )
         except Exception as e:
             console.print(f"[yellow]Skipping config generation:[/yellow] {e}")
 
     if run_smoke:
         cfg = target / "config" / "run_toolkit_config.yaml"
         console.print("[bold]Smoke test command:[/bold]")
-        console.print(f"  python -m analyst_toolkit.run_toolkit_pipeline --config {cfg.relative_to(target)}")
+        console.print(
+            f"  python -m analyst_toolkit.run_toolkit_pipeline --config {cfg.relative_to(target)}"
+        )
