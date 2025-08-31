@@ -11,7 +11,14 @@
   <a href="sandbox_preview/"><img alt="Sandbox Preview" src="https://img.shields.io/badge/artifact-sandbox__preview-blue"></a>
   <a href="https://github.com/G-Schumacher44/analyst_toolkit_deployment_utility/actions/workflows/ci.yml"><img alt="CI" src="https://img.shields.io/github/actions/workflow/status/G-Schumacher44/analyst_toolkit_deployment_utility/ci.yml?branch=main"></a>
   <a href="https://github.com/G-Schumacher44/analyst_toolkit_deployment_utility/actions/workflows/release.yml"><img alt="Release" src="https://img.shields.io/github/actions/workflow/status/G-Schumacher44/analyst_toolkit_deployment_utility/release.yml?branch=main"></a>
-  <a href="https://github.com/codespaces/new/G-Schumacher44/analyst_toolkit_deployment_utility?quickstart=1"><img alt="Open in Codespaces" src="https://github.com/codespaces/badge.svg"></a>
+  <a href="https://github.com/codespaces/new/G-Schumacher44/analyst_toolkit_deployment_utAdded: Deployment bundle deploy_toolkit.zip with Makefile, templates, and bootstrap script.
+Added: README TL;DR and Quick Start while preserving your skeleton layout.
+Added: Consistent navigation footers across docs for quick navigation.
+Added: .env.example with safe defaults; standardized env name to analyst-toolkit.
+Changed: Fixed docs (image paths to repo_img, internal links, typos) and corrected code snippets.
+Changed: README now links to deployment, usage, and config guides in tool_kit_resources/.
+Removed: Tracked .env, .DS_Store, and large sample CSV to reduce repo bloat.
+Infrastructure: .vscode/ added to .gitignore (keep local settings); kept deployment zip in-repo.ility?quickstart=1"><img alt="Open in Codespaces" src="https://github.com/codespaces/badge.svg"></a>
   <a href="https://github.com/G-Schumacher44/analyst_toolkit_deployment_utility/actions/workflows/lint.yml"><img alt="Lint" src="https://img.shields.io/github/actions/workflow/status/G-Schumacher44/analyst_toolkit_deployment_utility/lint.yml?branch=main"></a>
 </p>
 

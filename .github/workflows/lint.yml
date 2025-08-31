@@ -5,6 +5,7 @@ on:
     branches: [ main ]
   push:
     branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   flake8:
@@ -26,4 +27,3 @@ jobs:
       - name: Run flake8
         run: |
           flake8 src
-
