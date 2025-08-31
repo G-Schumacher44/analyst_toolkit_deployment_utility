@@ -7,8 +7,12 @@
 <p align="center">
   <img alt="MIT License" src="https://img.shields.io/badge/license-MIT-blue">
   <img alt="Status" src="https://img.shields.io/badge/status-active-brightgreen">
-  <img alt="Version" src="https://img.shields.io/badge/version-v0.1.1-blueviolet">
+  <img alt="Version" src="https://img.shields.io/badge/version-v0.1.2-blueviolet">
   <a href="sandbox_preview/"><img alt="Sandbox Preview" src="https://img.shields.io/badge/artifact-sandbox__preview-blue"></a>
+  <a href="https://github.com/G-Schumacher44/analyst_toolkit_deployment_utility/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/G-Schumacher44/analyst_toolkit_deployment_utility/actions/workflows/ci.yml/badge.svg?branch=main"></a>
+  <a href="https://github.com/G-Schumacher44/analyst_toolkit_deployment_utility/actions/workflows/release.yml"><img alt="Release" src="https://github.com/G-Schumacher44/analyst_toolkit_deployment_utility/actions/workflows/release.yml/badge.svg"></a>
+  <a href="https://codespaces.new/G-Schumacher44/analyst_toolkit_deployment_utility"><img alt="Open in Codespaces" src="https://img.shields.io/badge/Codespaces-Open%20in%20Codespaces-blue?logo=github"></a>
+  <a href="https://github.com/G-Schumacher44/analyst_toolkit_deployment_utility/actions/workflows/lint.yml"><img alt="Lint" src="https://github.com/G-Schumacher44/analyst_toolkit_deployment_utility/actions/workflows/lint.yml/badge.svg?branch=main"></a>
 </p>
 
 ## 📚 Overview
@@ -215,6 +219,12 @@ An example scaffolded project is included under `sandbox_preview/` to showcase t
   - `python -m analyst_toolkit.run_toolkit_pipeline --config config/run_toolkit_config.yaml`
 
 Note: The artifact uses `.gitkeep` placeholders so its `data/` and `exports/` folders remain visible without shipping data.
+
+## 🛠 CI/CD and Codespaces
+
+- GitHub Actions: automated build + metadata checks on pushes/PRs. See `.github/workflows/ci.yml`.
+- Release workflow: builds artifacts on tags (`v*`) and can publish to TestPyPI/PyPI if secrets are set. See `.github/workflows/release.yml`.
+- Codespaces: open in GitHub Codespaces and the devcontainer provisions a conda env from `environment.dev.yml`, installs the package, and registers a Jupyter kernel. See `.devcontainer/`.
 
 ## 🤝 On Generative AI Use
 
