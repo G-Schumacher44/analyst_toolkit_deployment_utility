@@ -142,7 +142,14 @@ def infer_configs_cmd(
         detect_datetimes=detect_datetimes,
         datetime_hints=hints,
     )
-    print(f"[green]Wrote suggested YAMLs to:[/green] {Path(out).relative_to(root)}")
+    # Display a friendly relative path when possible without raising
+    disp = Path(out)
+    try:
+        disp = disp.resolve().relative_to(root.resolve())
+    except Exception:
+        # If resolution/relativization fails, fall back to raw path
+        pass
+    print(f"[green]Wrote suggested YAMLs to:[/green] {disp}")
 
 
 def main_deploy() -> None:

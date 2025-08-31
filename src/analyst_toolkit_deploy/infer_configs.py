@@ -66,7 +66,8 @@ def infer_types(df: pd.DataFrame, detect_datetimes: bool = True) -> Dict[str, st
         if detect_datetimes and dtype == "object":
             sample = s.dropna().astype(str).head(500)
             if not sample.empty:
-                parsed = pd.to_datetime(sample, errors="coerce", infer_datetime_format=True)
+                # Prefer element-wise parsing without warnings on pandas >=2
+                parsed = pd.to_datetime(sample, errors="coerce", format="mixed")
                 if parsed.notna().mean() >= 0.9:
                     types[col] = "datetime64[ns]"
                     continue
