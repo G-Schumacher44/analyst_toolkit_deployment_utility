@@ -1,0 +1,17 @@
+name: analyst_toolkit_deploy
+channels:
+  - conda-forge
+dependencies:
+  - python=3.10
+  - pip
+  - ipykernel
+  - jupyter
+  - pandas
+  - numpy
+  - scipy
+  - pyyaml
+  - black
+  - flake8
+  - pip:
+      - typer
+      - rich

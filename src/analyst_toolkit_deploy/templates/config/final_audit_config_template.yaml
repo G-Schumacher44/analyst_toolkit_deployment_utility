@@ -1,0 +1,30 @@
+# Final Audit module template (minimal)
+run_id: ""
+notebook: true
+logging: "auto"
+
+final_audit:
+  run: true
+  input_df_path: "exports/joblib/{run_id}/{run_id}_m07_df_imputed.joblib"
+  raw_data_path: "data/raw/input.csv"
+  final_edits:
+    run: true
+    drop_columns: []
+    rename_columns: {}
+    coerce_dtypes: {}
+  certification:
+    run: true
+    fail_on_error: true
+    rules:
+      expected_columns: []
+      expected_types: {}
+      categorical_values: {}
+      disallowed_null_columns: []
+  settings:
+    show_inline: true
+    export_report: true
+    paths:
+      report_excel: "exports/reports/final_audit/{run_id}_FinalAuditReport.xlsx"
+      checkpoint_csv: "data/processed/{run_id}_certified.csv"
+      checkpoint_joblib: "exports/joblib/{run_id}/{run_id}_certified.joblib"
+

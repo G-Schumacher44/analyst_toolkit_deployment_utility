@@ -1,0 +1,51 @@
+# ------------------------------------------------------------------------------
+# 📄 Config File: run_certification_config.yaml
+# 🧩 Module: Validation (M02 - Certification Mode)
+# 📌 Purpose: Performs strict schema and content validation as a quality gate.
+# ------------------------------------------------------------------------------
+# This configuration is used as the final checkpoint before certifying the data.
+# It enforces a strict fail policy (`fail_on_error: true`) to stop the pipeline
+# if any schema or value rules are violated.
+# ------------------------------------------------------------------------------
+
+# 📥 Execution context
+notebook: true           # Options: true, false
+run_id: ""
+logging: ""              # Options: 'on', 'off', or 'auto'
+
+# 🧪 Validation settings
+validation:
+  input_path: ""
+
+  # ✅ Schema and content validation rules
+  schema_validation:
+    run: true
+    fail_on_error: true    # Hard stop if validation fails (certification mode)
+
+    rules:
+      # 📐 Required column schema
+      expected_columns: 
+        - ""
+
+      # 🔢 Expected data types (post-normalization)
+      expected_types:
+        example: "object"
+
+      # 🧬 Valid categorical values (strict)
+      categorical_values:
+        example: ["example"]
+      # 📏 Numeric range validation
+      numeric_ranges:
+        example:
+          min: 30.0
+          max: 65.0
+
+  # 📤 Output and reporting
+  settings:
+    checkpoint: true        #toggle joblib save at the end of each module
+    checkpoint_path: "exports/joblib/{run_id}/{run_id}_m02_2_df_certified.joblib"
+    export: true
+    as_csv: false
+    export_path: "exports/reports/certification/certification_report.xlsx"
+    show_inline: true      #show inline dashboard
+
