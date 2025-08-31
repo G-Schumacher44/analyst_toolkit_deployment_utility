@@ -56,6 +56,7 @@ def _find_entry_csv(root: str) -> str:
     )
 
 
+
 def infer_types(df: pd.DataFrame, detect_datetimes: bool = True) -> Dict[str, str]:
     """Map each column to a simple dtype label; optionally detect datetimes.
 
@@ -185,6 +186,7 @@ def build_outlier_config(input_path_rel: str, numeric_cols) -> Dict[str, Any]:
             },
         },
     }
+
 
 
 def infer_configs(
