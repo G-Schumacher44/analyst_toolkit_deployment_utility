@@ -9,10 +9,10 @@
   <img alt="Status" src="https://img.shields.io/badge/status-active-brightgreen">
   <img alt="Version" src="https://img.shields.io/badge/version-v0.1.2-blueviolet">
   <a href="sandbox_preview/"><img alt="Sandbox Preview" src="https://img.shields.io/badge/artifact-sandbox__preview-blue"></a>
-  <a href="https://github.com/G-Schumacher44/analyst_toolkit_deployment_utility/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/G-Schumacher44/analyst_toolkit_deployment_utility/actions/workflows/ci.yml/badge.svg?branch=main"></a>
-  <a href="https://github.com/G-Schumacher44/analyst_toolkit_deployment_utility/actions/workflows/release.yml"><img alt="Release" src="https://github.com/G-Schumacher44/analyst_toolkit_deployment_utility/actions/workflows/release.yml/badge.svg"></a>
-  <a href="https://codespaces.new/G-Schumacher44/analyst_toolkit_deployment_utility"><img alt="Open in Codespaces" src="https://img.shields.io/badge/Codespaces-Open%20in%20Codespaces-blue?logo=github"></a>
-  <a href="https://github.com/G-Schumacher44/analyst_toolkit_deployment_utility/actions/workflows/lint.yml"><img alt="Lint" src="https://github.com/G-Schumacher44/analyst_toolkit_deployment_utility/actions/workflows/lint.yml/badge.svg?branch=main"></a>
+  <a href="https://github.com/G-Schumacher44/analyst_toolkit_deployment_utility/actions/workflows/ci.yml"><img alt="CI" src="https://img.shields.io/github/actions/workflow/status/G-Schumacher44/analyst_toolkit_deployment_utility/ci.yml"></a>
+  <a href="https://github.com/G-Schumacher44/analyst_toolkit_deployment_utility/actions/workflows/release.yml"><img alt="Release" src="https://img.shields.io/github/actions/workflow/status/G-Schumacher44/analyst_toolkit_deployment_utility/release.yml"></a>
+  <a href="https://github.com/codespaces/new/G-Schumacher44/analyst_toolkit_deployment_utility?quickstart=1"><img alt="Open in Codespaces" src="https://github.com/codespaces/badge.svg"></a>
+  <a href="https://github.com/G-Schumacher44/analyst_toolkit_deployment_utility/actions/workflows/lint.yml"><img alt="Lint" src="https://img.shields.io/github/actions/workflow/status/G-Schumacher44/analyst_toolkit_deployment_utility/lint.yml"></a>
 </p>
 
 ## 📚 Overview
