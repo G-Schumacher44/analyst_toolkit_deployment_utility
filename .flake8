@@ -1,6 +1,0 @@
-[flake8]
-max-line-length = 160
-extend-ignore =
-    # Handled by black/line-length; keep pragmatic to reduce noise
-    E203,
-    W503
