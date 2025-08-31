@@ -22,6 +22,7 @@ def _load_yaml(path: str) -> Dict[str, Any]:
         return yaml.safe_load(f) or {}
 
 
+
 def _write_yaml(path: str, data: Dict[str, Any]) -> None:
     """Write a dict to YAML with stable, readable formatting."""
     os.makedirs(os.path.dirname(path), exist_ok=True)
@@ -57,6 +58,7 @@ def _find_entry_csv(root: str) -> str:
     )
 
 
+
 def infer_types(df: pd.DataFrame, detect_datetimes: bool = True) -> Dict[str, str]:
     """Map each column to a simple dtype label; optionally detect datetimes.
 
@@ -78,6 +80,7 @@ def infer_types(df: pd.DataFrame, detect_datetimes: bool = True) -> Dict[str, st
                     continue
         types[col] = dtype
     return types
+
 
 
 def infer_categoricals(
@@ -111,6 +114,7 @@ def infer_categoricals(
     return cats
 
 
+
 def infer_numeric_ranges(df: pd.DataFrame) -> Dict[str, Dict[str, float]]:
     """Compute min/max ranges for numeric columns (NaNs ignored)."""
     ranges: Dict[str, Dict[str, float]] = {}
@@ -122,6 +126,7 @@ def infer_numeric_ranges(df: pd.DataFrame) -> Dict[str, Dict[str, float]]:
                 continue
             ranges[col] = {"min": float(s_clean.min()), "max": float(s_clean.max())}
     return ranges
+
 
 
 def build_validation_config(input_path_rel: str, cols, types, cats, ranges, fail_on_error: bool) -> Dict[str, Any]:
@@ -151,6 +156,7 @@ def build_validation_config(input_path_rel: str, cols, types, cats, ranges, fail
             },
         },
     }
+
 
 
 def build_outlier_config(input_path_rel: str, numeric_cols) -> Dict[str, Any]:

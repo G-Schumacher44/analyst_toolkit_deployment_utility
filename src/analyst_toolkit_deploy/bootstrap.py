@@ -23,6 +23,7 @@ from . import infer_configs as ic
 console = Console()
 
 
+
 def _pkg_path(rel: str) -> Optional[Path]:
     """Resolve a resource path inside the installed package for data files."""
     try:
@@ -32,6 +33,7 @@ def _pkg_path(rel: str) -> Optional[Path]:
             return Path(p)
     except Exception:
         return None
+
 
 
 def _copy_templates(
@@ -225,6 +227,7 @@ def _copy_templates(
     # Note: We do not copy or rewrite logo images into the scaffold to keep repos lean.
 
 
+
 def _wire_dataset(
     target_root: Path,
     dataset: str,
@@ -331,6 +334,7 @@ def _wire_dataset(
     return chosen
 
 
+
 def _persist_env_defaults(
     target_root: Path,
     env_name: str,
@@ -359,6 +363,7 @@ def _persist_env_defaults(
     upsert("PROJECT_NAME", project_name)
     upsert("VSCODE_AI", vscode_ai)
     envf.write_text(text, encoding="utf-8")
+
 
 
 def _setup_conda(target_root: Path, env_name: str, kernel_name: str, reuse: bool, force_recreate: bool) -> None:
@@ -449,6 +454,7 @@ def _setup_conda(target_root: Path, env_name: str, kernel_name: str, reuse: bool
     )
 
 
+
 def _setup_venv(target_root: Path, env_name: str, kernel_name: str, force_recreate: bool) -> None:
     venv_dir = target_root / ".venv"
     if force_recreate and venv_dir.exists():
@@ -469,6 +475,7 @@ def _setup_venv(target_root: Path, env_name: str, kernel_name: str, force_recrea
         "python.exe" if os.name == "nt" else "python"
     )
     register_ipykernel(env_name, kernel_name, py_exec)
+
 
 
 def bootstrap(
