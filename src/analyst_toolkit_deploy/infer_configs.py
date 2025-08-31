@@ -3,7 +3,7 @@ from __future__ import annotations
 import os
 import re
 import glob
-from typing import Dict, Any, List, Tuple
+from typing import Dict, Any, List
 
 import pandas as pd
 import yaml
@@ -40,16 +40,18 @@ def _find_entry_csv(root: str) -> str:
 def infer_types(df: pd.DataFrame, detect_datetimes: bool = True) -> Dict[str, str]:
     types: Dict[str, str] = {}
     for col in df.columns:
-      s = df[col]
-      dtype = str(s.dtype)
-      if detect_datetimes and dtype == "object":
-          sample = s.dropna().astype(str).head(500)
-          if not sample.empty:
-              parsed = pd.to_datetime(sample, errors="coerce", infer_datetime_format=True)
-              if parsed.notna().mean() >= 0.9:
-                  types[col] = "datetime64[ns]"
-                  continue
-      types[col] = dtype
+        s = df[col]
+        dtype = str(s.dtype)
+        if detect_datetimes and dtype == "object":
+            sample = s.dropna().astype(str).head(500)
+            if not sample.empty:
+                parsed = pd.to_datetime(
+                    sample, errors="coerce", infer_datetime_format=True
+                )
+                if parsed.notna().mean() >= 0.9:
+                    types[col] = "datetime64[ns]"
+                    continue
+        types[col] = dtype
     return types
 
 
@@ -161,7 +163,8 @@ def infer_configs(
         if ":" not in hint:
             continue
         col, fmt = hint.split(":", 1)
-        col = col.strip(); fmt = fmt.strip()
+        col = col.strip()
+        fmt = fmt.strip()
         if col in df.columns:
             try:
                 df[col] = pd.to_datetime(df[col], format=fmt, errors="coerce")
@@ -178,8 +181,12 @@ def infer_configs(
 
     validation = build_validation_config(rel_path, cols, types, cats, ranges, fail_on_error=False)
     certification = build_validation_config(rel_path, cols, types, cats, ranges, fail_on_error=True)
-    numeric_cols = [c for c in df.columns if pd.api.types.is_numeric_dtype(df[c])]
-    numeric_cols = [c for c in numeric_cols if not any(p.search(c) for p in exclude_re)]
+    numeric_cols = [
+        c for c in df.columns if pd.api.types.is_numeric_dtype(df[c])
+    ]
+    numeric_cols = [
+        c for c in numeric_cols if not any(p.search(c) for p in exclude_re)
+    ]
     outliers = build_outlier_config(rel_path, numeric_cols)
 
     out_dir = outdir or os.path.join(root, "config", "generated")
@@ -188,4 +195,3 @@ def infer_configs(
     _write_yaml(os.path.join(out_dir, "certification_config_autofill.yaml"), certification)
     _write_yaml(os.path.join(out_dir, "outlier_config_autofill.yaml"), outliers)
     return out_dir
-

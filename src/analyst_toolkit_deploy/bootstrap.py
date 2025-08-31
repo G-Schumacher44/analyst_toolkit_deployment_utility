@@ -248,8 +248,11 @@ def _wire_dataset(
         if not is_interactive():
             console.print("[yellow]Non-interactive environment: supply --dataset <path>[/yellow]")
             return None
-        labels = [str(p.relative_to(target_root)) if target_root in p.parents else str(p) for p in opts]
-        choice = Prompt.ask("Select dataset index", choices=[str(i) for i in range(len(opts))], default="0")
+        choice = Prompt.ask(
+            "Select dataset index",
+            choices=[str(i) for i in range(len(opts))],
+            default="0",
+        )
         chosen = opts[int(choice)]
         if chosen.parent == target_root and ingest != "none":
             chosen = ingest_if_needed(chosen)
