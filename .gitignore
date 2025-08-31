@@ -9,6 +9,8 @@ __pycache__/
 .venv/
 venv/
 env/
+.artifact_venv/
+.qa_venv/
 
 # OS junk
 .DS_Store
