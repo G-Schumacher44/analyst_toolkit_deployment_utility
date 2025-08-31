@@ -1,10 +1,11 @@
-from __future__ import annotations
 """CSV inspection utilities to build suggested YAML configs.
 
 Reads a sample (or full) CSV, infers simple schema information and
 categorical values, and writes three config files under `config/`:
 validation, certification, and outlier detection.
 """
+
+from __future__ import annotations
 
 import os
 import re
@@ -26,6 +27,7 @@ def _write_yaml(path: str, data: Dict[str, Any]) -> None:
     os.makedirs(os.path.dirname(path), exist_ok=True)
     with open(path, "w", encoding="utf-8") as f:
         yaml.safe_dump(data, f, sort_keys=False, allow_unicode=True)
+
 
 
 def _find_entry_csv(root: str) -> str:

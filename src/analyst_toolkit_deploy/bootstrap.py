@@ -1,4 +1,3 @@
-from __future__ import annotations
 """Project scaffolding utilities for the Deploy package.
 
 Copies templates, wires datasets, persists defaults, and optionally
@@ -6,29 +5,67 @@ creates environments and Jupyter kernels. `bootstrap()` orchestrates
 the end-to-end flow; helper functions are usable standalone.
 """
 
+from __future__ import annotations
+
 import os
 import shutil
 from pathlib import Path
-from typing import Optional, Literal
+from typing import Optional, Any, IO, Protocol
+from importlib import resources
+
+
+# Rich import with robust fallback and mypy-friendly types
+class _PrintProto(Protocol):
+    def __call__(
+        self,
+        *objects: Any,
+        sep: str = ...,
+        end: str = ...,
+        file: IO[str] | None = ...,
+        flush: bool = ...,
+    ) -> None:  # pragma: no cover - interface
+        ...
+
 try:
-    from rich import print
-    from rich.console import Console
-    from rich.prompt import Prompt
+    from rich import print as _rich_print
+    from rich.console import Console as _RichConsole
+    from rich.prompt import Prompt as _RichPrompt
 except Exception:  # minimal fallback if rich is unavailable
     import builtins as _builtins
 
-    def print(*args, **kwargs):
-        _builtins.print(*args)
+    def _fallback_print(
+        *objects: Any,
+        sep: str = " ",
+        end: str = "\n",
+        file: IO[str] | None = None,
+        flush: bool = False,
+    ) -> None:
+        _builtins.print(*objects, sep=sep, end=end, file=file, flush=flush)
 
-    class Console:
-        def print(self, *args, **kwargs):
-            _builtins.print(*args)
+    class _FallbackConsole:
+        def print(
+            self,
+            *objects: Any,
+            sep: str = " ",
+            end: str = "\n",
+            file: IO[str] | None = None,
+            flush: bool = False,
+        ) -> None:
+            _builtins.print(*objects, sep=sep, end=end, file=file, flush=flush)
 
-    class Prompt:
+    class _FallbackPrompt:
         @staticmethod
         def ask(msg, choices=None, default=None):
             return default if default is not None else (choices[0] if choices else "")
-from importlib import resources
+
+    _rich_print = _fallback_print  # type: ignore[assignment]
+    _RichConsole = _FallbackConsole  # type: ignore[assignment]
+    _RichPrompt = _FallbackPrompt  # type: ignore[assignment]
+
+# Public names used by the module
+print: _PrintProto = _rich_print  # type: ignore[assignment]
+Console = _RichConsole
+Prompt = _RichPrompt
 
 from .utils import ensure_dir, copy_file, update_yaml_key, run, conda_exists, register_ipykernel, is_interactive
 from . import infer_configs as ic
@@ -241,7 +278,7 @@ def _copy_templates(
 def _wire_dataset(
     target_root: Path,
     dataset: str,
-    ingest: Literal["move", "copy", "none"] = "copy",
+    ingest: str = "copy",
 ) -> Optional[Path]:
     """Select a CSV and write its path to the run config, with optional ingest."""
     cfg = target_root / "config" / "run_toolkit_config.yaml"
@@ -486,15 +523,15 @@ def _setup_venv(target_root: Path, env_name: str, kernel_name: str, force_recrea
 
 def bootstrap(
     target: Path,
-    env: Literal["conda", "venv", "none"] = "none",
+    env: str = "none",
     name: str = "analyst-toolkit",
     kernel_name: Optional[str] = None,
     dataset: str = "auto",
-    ingest: Literal["move", "copy", "none"] = "copy",
+    ingest: str = "copy",
     copy_notebook: bool = True,
     generate_configs: bool = False,
     project_name: str = "",
-    vscode_ai: Literal["gemini", "codex", "off"] = "gemini",
+    vscode_ai: str = "gemini",
     reuse_env: bool = True,
     force_recreate: bool = False,
     force_copy: bool = True,
@@ -511,6 +548,20 @@ def bootstrap(
 
     console.print("[bold]Persisting .env defaults[/bold]")
     _persist_env_defaults(target, name, kernel_name, project_name, vscode_ai)
+
+    # Validate choice-like inputs to keep behavior strict but Typer-compatible
+    valid_env = {"conda", "venv", "none"}
+    if env not in valid_env:
+        console.print(f"[red]Invalid env: {env}. Use one of: {sorted(valid_env)}[/red]")
+        return
+    valid_ingest = {"move", "copy", "none"}
+    if ingest not in valid_ingest:
+        console.print(f"[red]Invalid ingest: {ingest}. Use one of: {sorted(valid_ingest)}[/red]")
+        return
+    valid_ai = {"gemini", "codex", "off"}
+    if vscode_ai not in valid_ai:
+        console.print(f"[red]Invalid vscode_ai: {vscode_ai}. Use one of: {sorted(valid_ai)}[/red]")
+        return
 
     if env == "conda":
         console.print("[bold]Setting up Conda environment[/bold]")

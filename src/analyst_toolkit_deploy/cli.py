@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 """Typer-powered CLI entrypoints.
 
 Exposes two commands:
@@ -10,8 +8,10 @@ The functions below are thin wrappers around the underlying library
 functions to keep command parsing and business logic cleanly separated.
 """
 
+from __future__ import annotations
+
 from pathlib import Path
-from typing import Optional, Literal
+from typing import Optional
 
 import typer
 from rich import print
@@ -36,7 +36,7 @@ def deploy_cmd(
         dir_okay=True,
         help="Project root to scaffold into (will be created)",
     ),
-    env: Literal["conda", "venv", "none"] = typer.Option(
+    env: str = typer.Option(
         "none",
         help="Environment mode: conda|venv|none",
     ),
@@ -52,7 +52,7 @@ def deploy_cmd(
         "auto",
         help="Dataset wiring: auto|prompt|<path>",
     ),
-    ingest: Literal["move", "copy", "none"] = typer.Option(
+    ingest: str = typer.Option(
         "copy",
         help="Ingest policy for root CSV: move|copy|none",
     ),
@@ -68,7 +68,7 @@ def deploy_cmd(
         "",
         help="Project name for README / notebook injection",
     ),
-    vscode_ai: Literal["gemini", "codex", "off"] = typer.Option(
+    vscode_ai: str = typer.Option(
         "gemini",
         help="Inline suggestion provider: gemini|codex|off",
     ),
