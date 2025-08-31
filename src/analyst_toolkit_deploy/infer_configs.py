@@ -22,7 +22,6 @@ def _load_yaml(path: str) -> Dict[str, Any]:
         return yaml.safe_load(f) or {}
 
 
-
 def _write_yaml(path: str, data: Dict[str, Any]) -> None:
     """Write a dict to YAML with stable, readable formatting."""
     os.makedirs(os.path.dirname(path), exist_ok=True)
@@ -122,7 +121,6 @@ def infer_numeric_ranges(df: pd.DataFrame) -> Dict[str, Dict[str, float]]:
                 continue
             ranges[col] = {"min": float(s_clean.min()), "max": float(s_clean.max())}
     return ranges
-
 
 
 def build_validation_config(input_path_rel: str, cols, types, cats, ranges, fail_on_error: bool) -> Dict[str, Any]:

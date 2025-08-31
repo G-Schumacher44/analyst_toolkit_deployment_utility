@@ -23,7 +23,6 @@ from . import infer_configs as ic
 console = Console()
 
 
-
 def _pkg_path(rel: str) -> Optional[Path]:
     """Resolve a resource path inside the installed package for data files."""
     try:
@@ -33,7 +32,6 @@ def _pkg_path(rel: str) -> Optional[Path]:
             return Path(p)
     except Exception:
         return None
-
 
 
 def _copy_templates(
@@ -227,7 +225,6 @@ def _copy_templates(
     # Note: We do not copy or rewrite logo images into the scaffold to keep repos lean.
 
 
-
 def _wire_dataset(
     target_root: Path,
     dataset: str,
@@ -332,7 +329,6 @@ def _wire_dataset(
             disp = chosen
         console.print(f"[green]Wired dataset:[/green] {disp}")
     return chosen
-
 
 
 def _persist_env_defaults(
