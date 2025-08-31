@@ -226,7 +226,7 @@ This project is licensed under the [MIT License](LICENSE).</file>
 ---
 
 <p align="center">
-  <a href="README.md">🏠 <b>Main README</b></a>
+  <a href="resource_hub/notebook_usage_guide.md">📓 <b>Notebook Usage</b></a>
   &nbsp;·&nbsp;
   <a href="resource_hub/resource_hub.md">🗺️ <b>Resource Hub</b></a>
   &nbsp;·&nbsp;
