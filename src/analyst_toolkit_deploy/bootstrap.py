@@ -13,7 +13,6 @@ from importlib import resources
 from pathlib import Path
 from typing import Optional
 
-from rich import print
 from rich.console import Console
 from rich.prompt import Prompt
 
