@@ -15,8 +15,7 @@
 
 Cross‑platform scaffolding and configuration tools for Analyst Toolkit projects.
 Scaffold a ready‑to‑run repo, wire your dataset, optionally create a project environment,
-and generate suggested YAML configs for validation and outlier detection — following the same
-style and documentation patterns used by the core Analyst Toolkit.
+and generate suggested YAML configs for validation and outlier detection 
 
 👀 [`Checkout the Analyst Toolkit`](https://github.com/G-Schumacher44/analyst_toolkit) on GitHub
 
