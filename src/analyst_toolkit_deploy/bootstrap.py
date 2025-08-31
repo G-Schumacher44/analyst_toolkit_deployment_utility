@@ -63,9 +63,7 @@ def _copy_templates(
             dst = target_root / "config" / src.name
             copy_file(src, dst, overwrite=force)
     else:
-        console.print(
-            "[yellow]No packaged templates found; skipping config copy[/yellow]"
-        )
+        console.print("[yellow]No packaged templates found; skipping config copy[/yellow]")
 
     # .env template
     env_tmpl = _pkg_path("templates/.env.template")
@@ -96,6 +94,7 @@ def _copy_templates(
         # Inject project name into README title
         try:
             import re
+
             effective_name = project_name
             if not effective_name:
                 # Derive from target folder name
@@ -104,9 +103,7 @@ def _copy_templates(
             txt = readme_dst.read_text(encoding="utf-8")
             pattern = r"^## \((?:Title Placeholder)\)"
             if re.search(pattern, txt, flags=re.M):
-                txt = re.sub(
-                    pattern, f"## {effective_name}", txt, count=1, flags=re.M
-                )
+                txt = re.sub(pattern, f"## {effective_name}", txt, count=1, flags=re.M)
             else:
                 # Fallback simple replace once
                 txt = txt.replace("## (Title Placeholder)", f"## {effective_name}", 1)
@@ -134,33 +131,18 @@ def _copy_templates(
         try:
             import re
             from datetime import datetime
+
             author = os.environ.get("LICENSE_AUTHOR", "").strip()
             year = str(datetime.now().year)
             txt = lic_dst.read_text(encoding="utf-8")
             # Replace or insert year
             if re.search(r"Copyright \(c\) \d{4}", txt):
-                txt = re.sub(
-                    r"Copyright \(c\) \d{4}",
-                    f"Copyright (c) {year}",
-                    txt,
-                    count=1,
-                )
+                txt = re.sub(r"Copyright \(c\) \d{4}", f"Copyright (c) {year}", txt, count=1)
             else:
-                txt = re.sub(
-                    r"^MIT License\n",
-                    f"MIT License\n\nCopyright (c) {year}\n",
-                    txt,
-                    count=1,
-                    flags=re.M,
-                )
+                txt = re.sub(r"^MIT License\n", f"MIT License\n\nCopyright (c) {year}\n", txt, count=1, flags=re.M)
             # Optionally append author after year if provided
             if author:
-                txt = re.sub(
-                    r"(Copyright \(c\) \d{4})(\n)",
-                    rf"\1 {author}\2",
-                    txt,
-                    count=1,
-                )
+                txt = re.sub(r"(Copyright \(c\) \d{4})(\n)", rf"\1 {author}\2", txt, count=1)
             lic_dst.write_text(txt, encoding="utf-8")
         except Exception:
             pass
@@ -180,19 +162,13 @@ def _copy_templates(
             copy_file(nb, target_root / "notebooks" / "toolkit_template.ipynb", overwrite=force)
         else:
             # Fallback: if running from the original bundle, copy notebook from workspace
-            workspace_nb = (
-                Path.cwd() / "deploy_toolkit" / "templates" / "toolkit_template.ipynb"
-            )
+            workspace_nb = Path.cwd() / "deploy_toolkit" / "templates" / "toolkit_template.ipynb"
             if workspace_nb.exists():
                 copy_file(workspace_nb, target_root / "notebooks" / "toolkit_template.ipynb", overwrite=force)
             else:
-                console.print(
-                    "[yellow]Notebook template not found; skipping[/yellow]"
-                )
+                console.print("[yellow]Notebook template not found; skipping[/yellow]")
     else:
-        console.print(
-            "[yellow]Notebook copy disabled via --copy-notebook False[/yellow]"
-        )
+        console.print("[yellow]Notebook copy disabled via --copy-notebook False[/yellow]")
 
     # Resource hub documentation (prefer packaged; fallback to workspace tool_kit_resources)
     docs_dst = target_root / "resource_hub"
@@ -210,15 +186,7 @@ def _copy_templates(
         if not hub_readme.exists():
             try:
                 links = "\n".join(f"- {name}" for name in sorted(copied))
-                hub_readme.write_text(
-                    (
-                        "Resource Hub\n\n"
-                        + "Curated documentation for the scaffolded project.\n\n"
-                        + links
-                        + "\n"
-                    ),
-                    encoding="utf-8",
-                )
+                hub_readme.write_text(("Resource Hub\n\n" + "Curated documentation for the scaffolded project.\n\n" + links + "\n"), encoding="utf-8")
             except Exception:
                 pass
 
@@ -245,10 +213,12 @@ def _wire_dataset(
         # Suggest run_id if missing
         try:
             import yaml  # local import
+
             data = yaml.safe_load(cfg.read_text()) or {}
             if not data.get("run_id"):
                 stem = path.stem
                 from time import strftime
+
                 data["run_id"] = f"{stem}_{strftime('%Y%m%d_%H%M%S')}"
                 cfg.write_text(yaml.safe_dump(data, sort_keys=False, allow_unicode=True))
         except Exception:
@@ -280,16 +250,12 @@ def _wire_dataset(
             console.print("[yellow]Multiple or no CSVs found; skipping dataset wiring[/yellow]")
             return None
     elif dataset == "prompt":
-        opts = sorted((target_root / "data" / "raw").glob("*.csv")) + sorted(
-            target_root.glob("*.csv")
-        )
+        opts = sorted((target_root / "data" / "raw").glob("*.csv")) + sorted(target_root.glob("*.csv"))
         if not opts:
             console.print("[yellow]No CSVs found to select[/yellow]")
             return None
         if not is_interactive():
-            console.print(
-                "[yellow]Non-interactive environment: supply --dataset <path>[/yellow]"
-            )
+            console.print("[yellow]Non-interactive environment: supply --dataset <path>[/yellow]")
             return None
         choice = Prompt.ask(
             "Select dataset index",
@@ -347,6 +313,7 @@ def _persist_env_defaults(
         if not val:
             return
         import re
+
         pattern = re.compile(rf"^{key}=.*$", re.M)
         if pattern.search(text):
             text = pattern.sub(f"{key}={val}", text)
@@ -354,6 +321,7 @@ def _persist_env_defaults(
             if text and not text.endswith("\n"):
                 text += "\n"
             text += f"{key}={val}\n"
+
     upsert("ENV_NAME", env_name)
     upsert("KERNEL_NAME", kernel_name)
     upsert("PROJECT_NAME", project_name)
@@ -369,12 +337,9 @@ def _setup_conda(target_root: Path, env_name: str, kernel_name: str, reuse: bool
     exists = False
     try:
         import subprocess
+
         out = subprocess.check_output(["conda", "env", "list"], text=True)
-        exists = any(
-            line.split()[0] == env_name
-            for line in out.splitlines()
-            if line and not line.startswith("#")
-        )
+        exists = any(line.split()[0] == env_name for line in out.splitlines() if line and not line.startswith("#"))
     except Exception:
         pass
 
@@ -388,9 +353,7 @@ def _setup_conda(target_root: Path, env_name: str, kernel_name: str, reuse: bool
     else:
         env_yml = target_root / "environment.yml"
         if env_yml.exists():
-            console.print(
-                f"[green]Creating conda env from environment.yml:[/green] {env_name}"
-            )
+            console.print(f"[green]Creating conda env from environment.yml:[/green] {env_name}")
             run(
                 ["conda", "env", "create", "-f", str(env_yml), "-n", env_name],
                 check=False,
@@ -402,14 +365,17 @@ def _setup_conda(target_root: Path, env_name: str, kernel_name: str, reuse: bool
             )
         else:
             console.print(f"[green]Creating conda env:[/green] {env_name}")
-            run([
-                "conda",
-                "create",
-                "-y",
-                "-n",
-                env_name,
-                "python=3.10",
-            ], check=False)
+            run(
+                [
+                    "conda",
+                    "create",
+                    "-y",
+                    "-n",
+                    env_name,
+                    "python=3.10",
+                ],
+                check=False,
+            )
             req = target_root / "requirements.txt"
             if req.exists():
                 run(
@@ -456,18 +422,14 @@ def _setup_venv(target_root: Path, env_name: str, kernel_name: str, force_recrea
     if not venv_dir.exists():
         run(["python", "-m", "venv", str(venv_dir)], check=False)
         bin_dir = "Scripts" if os.name == "nt" else "bin"
-        py_exec = venv_dir / bin_dir / (
-            "python.exe" if os.name == "nt" else "python"
-        )
+        py_exec = venv_dir / bin_dir / ("python.exe" if os.name == "nt" else "python")
         run([str(py_exec), "-m", "pip", "install", "--upgrade", "pip"], check=False)
         req = target_root / "requirements.txt"
         if req.exists():
             run([str(py_exec), "-m", "pip", "install", "-r", str(req)], check=False)
     # Register kernel
     bin_dir = "Scripts" if os.name == "nt" else "bin"
-    py_exec = venv_dir / bin_dir / (
-        "python.exe" if os.name == "nt" else "python"
-    )
+    py_exec = venv_dir / bin_dir / ("python.exe" if os.name == "nt" else "python")
     register_ipykernel(env_name, kernel_name, py_exec)
 
 
@@ -531,18 +493,12 @@ def bootstrap(
     if generate_configs:
         console.print("[bold]Generating suggested configs[/bold]")
         try:
-            outdir = ic.infer_configs(
-                str(target), input_path=str(chosen) if chosen else None
-            )
-            console.print(
-                f"[green]Generated configs:[/green] {Path(outdir).relative_to(target)}"
-            )
+            outdir = ic.infer_configs(str(target), input_path=str(chosen) if chosen else None)
+            console.print(f"[green]Generated configs:[/green] {Path(outdir).relative_to(target)}")
         except Exception as e:
             console.print(f"[yellow]Skipping config generation:[/yellow] {e}")
 
     if run_smoke:
         cfg = target / "config" / "run_toolkit_config.yaml"
         console.print("[bold]Smoke test command:[/bold]")
-        console.print(
-            f"  python -m analyst_toolkit.run_toolkit_pipeline --config {cfg.relative_to(target)}"
-        )
+        console.print(f"  python -m analyst_toolkit.run_toolkit_pipeline --config {cfg.relative_to(target)}")

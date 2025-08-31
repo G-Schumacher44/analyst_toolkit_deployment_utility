@@ -38,7 +38,6 @@ def copy_file(src: Path, dst: Path, overwrite: bool = True) -> None:
     shutil.copy2(src, dst)
 
 
-
 def update_yaml_key(path: Path, key: str, value) -> None:
     """Update (or insert) a top-level YAML key in-place.
 
@@ -73,9 +72,7 @@ def run(
     """
     proc = subprocess.run(list(cmd), cwd=str(cwd) if cwd else None, env=env)
     if check and proc.returncode != 0:
-        raise RuntimeError(
-            f"Command failed ({proc.returncode}): {' '.join(cmd)}"
-        )
+        raise RuntimeError(f"Command failed ({proc.returncode}): {' '.join(cmd)}")
     return proc.returncode
 
 

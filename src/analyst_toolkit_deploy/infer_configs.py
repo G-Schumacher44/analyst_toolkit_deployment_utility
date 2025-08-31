@@ -49,12 +49,8 @@ def _find_entry_csv(root: str) -> str:
     if len(candidates) == 1:
         return candidates[0]
     raise RuntimeError(
-        (
-            "Could not determine entry CSV. Set --input or pipeline_entry_path in "
-            "config/run_toolkit_config.yaml or place exactly one CSV in data/raw/."
-        )
+        ("Could not determine entry CSV. Set --input or pipeline_entry_path in " "config/run_toolkit_config.yaml or place exactly one CSV in data/raw/.")
     )
-
 
 
 def infer_types(df: pd.DataFrame, detect_datetimes: bool = True) -> Dict[str, str]:
@@ -70,9 +66,7 @@ def infer_types(df: pd.DataFrame, detect_datetimes: bool = True) -> Dict[str, st
         if detect_datetimes and dtype == "object":
             sample = s.dropna().astype(str).head(500)
             if not sample.empty:
-                parsed = pd.to_datetime(
-                    sample, errors="coerce", infer_datetime_format=True
-                )
+                parsed = pd.to_datetime(sample, errors="coerce", infer_datetime_format=True)
                 if parsed.notna().mean() >= 0.9:
                     types[col] = "datetime64[ns]"
                     continue
@@ -98,14 +92,8 @@ def infer_categoricals(
         s = df[col]
         if exclude_patterns and any(p.search(col) for p in exclude_patterns):
             continue
-        if (
-            s.dtype == "object"
-            or str(s.dtype).startswith("category")
-            or s.nunique(dropna=True) <= max_unique
-        ):
-            vals = (
-                s.dropna().astype(str).value_counts().index.tolist()[:top_n]
-            )
+        if s.dtype == "object" or str(s.dtype).startswith("category") or s.nunique(dropna=True) <= max_unique:
+            vals = s.dropna().astype(str).value_counts().index.tolist()[:top_n]
             if vals:
                 cats[col] = sorted(list(set(vals)))
     return cats
@@ -155,9 +143,7 @@ def build_validation_config(input_path_rel: str, cols, types, cats, ranges, fail
 
 def build_outlier_config(input_path_rel: str, numeric_cols) -> Dict[str, Any]:
     """Assemble a simple outlier detection config for numeric columns."""
-    detection_specs = {
-        c: {"method": "iqr", "iqr_multiplier": 1.5} for c in numeric_cols
-    }
+    detection_specs = {c: {"method": "iqr", "iqr_multiplier": 1.5} for c in numeric_cols}
     detection_specs["__default__"] = {"method": "iqr", "iqr_multiplier": 2.0}
     return {
         "notebook": True,
@@ -186,7 +172,6 @@ def build_outlier_config(input_path_rel: str, numeric_cols) -> Dict[str, Any]:
             },
         },
     }
-
 
 
 def infer_configs(
@@ -250,12 +235,8 @@ def infer_configs(
         ranges,
         fail_on_error=True,
     )
-    numeric_cols = [
-        c for c in df.columns if pd.api.types.is_numeric_dtype(df[c])
-    ]
-    numeric_cols = [
-        c for c in numeric_cols if not any(p.search(c) for p in exclude_re)
-    ]
+    numeric_cols = [c for c in df.columns if pd.api.types.is_numeric_dtype(df[c])]
+    numeric_cols = [c for c in numeric_cols if not any(p.search(c) for p in exclude_re)]
     outliers = build_outlier_config(rel_path, numeric_cols)
 
     out_dir = outdir or os.path.join(root, "config", "generated")
