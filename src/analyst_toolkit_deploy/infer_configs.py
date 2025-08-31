@@ -1,4 +1,10 @@
 from __future__ import annotations
+"""CSV inspection utilities to build suggested YAML configs.
+
+Reads a sample (or full) CSV, infers simple schema information and
+categorical values, and writes three config files under `config/`:
+validation, certification, and outlier detection.
+"""
 
 import os
 import re
@@ -10,17 +16,26 @@ import yaml
 
 
 def _load_yaml(path: str) -> Dict[str, Any]:
+    """Safe-load YAML file into a dict; return empty mapping on null."""
     with open(path, "r", encoding="utf-8") as f:
         return yaml.safe_load(f) or {}
 
 
 def _write_yaml(path: str, data: Dict[str, Any]) -> None:
+    """Write a dict to YAML with stable, readable formatting."""
     os.makedirs(os.path.dirname(path), exist_ok=True)
     with open(path, "w", encoding="utf-8") as f:
         yaml.safe_dump(data, f, sort_keys=False, allow_unicode=True)
 
 
 def _find_entry_csv(root: str) -> str:
+    """Infer the input CSV from config or a single file under data/raw.
+
+    Preference order:
+    1) `config/run_toolkit_config.yaml` → `pipeline_entry_path`.
+    2) Exactly one `*.csv` under `data/raw/`.
+    Otherwise, raise with a clear instruction.
+    """
     cfg_path = os.path.join(root, "config", "run_toolkit_config.yaml")
     if os.path.exists(cfg_path):
         cfg = _load_yaml(cfg_path)
@@ -38,6 +53,11 @@ def _find_entry_csv(root: str) -> str:
 
 
 def infer_types(df: pd.DataFrame, detect_datetimes: bool = True) -> Dict[str, str]:
+    """Map each column to a simple dtype label; optionally detect datetimes.
+
+    For object columns, try to parse a small sample as datetimes; if ≥90%
+    parse, treat the column as datetime64.
+    """
     types: Dict[str, str] = {}
     for col in df.columns:
         s = df[col]
@@ -61,6 +81,13 @@ def infer_categoricals(
     top_n: int = 30,
     exclude_patterns: List[re.Pattern] | None = None,
 ) -> Dict[str, list]:
+    """Return a map of likely-categorical columns to a small set of values.
+
+    Heuristics:
+    - object dtype OR `nunique` ≤ `max_unique`.
+    - skip columns matching any exclude pattern.
+    Values are capped to the top-N most frequent unique strings.
+    """
     cats: Dict[str, list] = {}
     for col in df.columns:
         s = df[col]
@@ -74,6 +101,7 @@ def infer_categoricals(
 
 
 def infer_numeric_ranges(df: pd.DataFrame) -> Dict[str, Dict[str, float]]:
+    """Compute min/max ranges for numeric columns (NaNs ignored)."""
     ranges: Dict[str, Dict[str, float]] = {}
     for col in df.columns:
         s = df[col]
@@ -86,6 +114,7 @@ def infer_numeric_ranges(df: pd.DataFrame) -> Dict[str, Dict[str, float]]:
 
 
 def build_validation_config(input_path_rel: str, cols, types, cats, ranges, fail_on_error: bool) -> Dict[str, Any]:
+    """Assemble a validation/certification config structure from inference."""
     return {
         "notebook": True,
         "run_id": "",
@@ -114,6 +143,7 @@ def build_validation_config(input_path_rel: str, cols, types, cats, ranges, fail
 
 
 def build_outlier_config(input_path_rel: str, numeric_cols) -> Dict[str, Any]:
+    """Assemble a simple outlier detection config for numeric columns."""
     detection_specs = {c: {"method": "iqr", "iqr_multiplier": 1.5} for c in numeric_cols}
     detection_specs["__default__"] = {"method": "iqr", "iqr_multiplier": 2.0}
     return {
@@ -148,6 +178,10 @@ def infer_configs(
     detect_datetimes: bool = True,
     datetime_hints: List[str] | None = None,
 ) -> str:
+    """High-level API: read CSV, infer, and write suggested YAMLs.
+
+    Returns the output directory path where files were written.
+    """
     root = os.path.abspath(root)
     input_csv = input_path or _find_entry_csv(root)
     rel_path = os.path.relpath(input_csv, root)

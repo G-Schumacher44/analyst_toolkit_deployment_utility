@@ -37,3 +37,12 @@ include = [
   "README.md",
   "LICENSE"
 ]
+
+[tool.black]
+line-length = 160
+target-version = ["py39", "py310", "py311", "py312"]
+
+[tool.isort]
+profile = "black"
+line_length = 160
+src_paths = ["src"]

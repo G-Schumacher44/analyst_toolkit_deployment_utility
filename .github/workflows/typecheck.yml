@@ -1,14 +1,14 @@
-name: Lint
+name: Type Check
 
 on:
-  pull_request:
-    branches: [ main ]
   push:
+    branches: [ main ]
+  pull_request:
     branches: [ main ]
   workflow_dispatch:
 
 jobs:
-  flake8:
+  mypy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -19,19 +19,12 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Install formatters and linters
+      - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          python -m pip install flake8 black isort
+          python -m pip install mypy types-PyYAML pandas numpy typer rich
 
-      - name: Black (check)
+      - name: Run mypy
         run: |
-          black --check .
+          mypy src
 
-      - name: isort (check)
-        run: |
-          isort --check-only --diff src
-
-      - name: flake8
-        run: |
-          flake8 src

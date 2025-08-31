@@ -12,6 +12,8 @@ dependencies:
   - pyyaml
   - black
   - flake8
+  - pytest
+  - pyyaml
   - pip:
       - typer
       - rich

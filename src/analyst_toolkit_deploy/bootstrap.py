@@ -1,4 +1,10 @@
 from __future__ import annotations
+"""Project scaffolding utilities for the Deploy package.
+
+Copies templates, wires datasets, persists defaults, and optionally
+creates environments and Jupyter kernels. `bootstrap()` orchestrates
+the end-to-end flow; helper functions are usable standalone.
+"""
 
 import os
 import shutil
@@ -29,6 +35,7 @@ console = Console()
 
 
 def _pkg_path(rel: str) -> Optional[Path]:
+    """Resolve a resource path inside the installed package for data files."""
     try:
         base = resources.files("analyst_toolkit_deploy")
         target = base.joinpath(rel)
@@ -39,6 +46,7 @@ def _pkg_path(rel: str) -> Optional[Path]:
 
 
 def _copy_templates(target_root: Path, force: bool, project_name: str, vscode_ai: str, copy_notebook: bool) -> None:
+    """Copy templates into target and inject project/license details where applicable."""
     # Ensure dirs
     for p in [
         target_root / "src",
@@ -194,10 +202,12 @@ def _wire_dataset(
     dataset: str,
     ingest: Literal["move", "copy", "none"] = "copy",
 ) -> Optional[Path]:
+    """Select a CSV and write its path to the run config, with optional ingest."""
     cfg = target_root / "config" / "run_toolkit_config.yaml"
     chosen: Optional[Path] = None
 
     def set_pipeline(path: Path) -> None:
+        """Write dataset path and suggest a timestamped run_id if missing."""
         try:
             rel = path.relative_to(target_root)
             entry = str(rel)
@@ -217,6 +227,7 @@ def _wire_dataset(
             pass
 
     def ingest_if_needed(src: Path) -> Path:
+        """Move/copy CSV into data/raw unless already under that folder."""
         if src.is_absolute() and target_root in src.parents:
             return src
         # if at project root and ingest is not none, move/copy into data/raw

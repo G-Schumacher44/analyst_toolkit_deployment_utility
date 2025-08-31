@@ -1,4 +1,13 @@
 from __future__ import annotations
+"""Typer-powered CLI entrypoints.
+
+Exposes two commands:
+- `deploy` – scaffold a project and optionally set up an env/kernel.
+- `infer-configs` – scan a CSV and generate suggested YAML configs.
+
+The functions below are thin wrappers around the underlying library
+functions to keep command parsing and business logic cleanly separated.
+"""
 
 from pathlib import Path
 from typing import Optional
@@ -30,7 +39,15 @@ def deploy_cmd(
     force_copy: bool = typer.Option(True, help="Overwrite existing template files"),
     run_smoke: bool = typer.Option(False, help="Print recommended smoke test command"),
 ):
-    """Scaffold a project and optionally create an environment/kernel and generate configs."""
+    """Scaffold a project and (optionally) set up env/kernel + configs.
+
+    Parameters are grouped as follows:
+    - Target and naming: `target`, `name`, `kernel_name`, `project_name`.
+    - Environment controls: `env`, `reuse_env`, `force_recreate`.
+    - Dataset wiring: `dataset`, `ingest`.
+    - Templates and docs: `copy_notebook`, `force_copy`, `vscode_ai`.
+    - Extras: `generate_configs`, `run_smoke`.
+    """
     bootstrap(
         target=target,
         env=env,  # explicit opt-in only
@@ -59,7 +76,11 @@ def infer_configs_cmd(
     detect_datetimes: bool = typer.Option(True, help="Attempt to infer datetimes from object columns"),
     datetime_hints: Optional[str] = typer.Option(None, help="Comma-separated hints: col:strftime e.g. capture_date:%Y-%m-%d"),
 ):
-    """Inspect a CSV and generate suggested config YAMLs."""
+    """Inspect a CSV and write suggested config YAMLs under `config/`.
+
+    If `--input` is not supplied, we try to infer the project CSV from
+    `config/run_toolkit_config.yaml` or a single CSV under `data/raw/`.
+    """
     root = Path.cwd()
     hints = [s.strip() for s in (datetime_hints or "").split(",") if s.strip()]
     out = ic.infer_configs(
