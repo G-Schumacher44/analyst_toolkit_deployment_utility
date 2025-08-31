@@ -56,8 +56,8 @@ def infer_types(df: pd.DataFrame, detect_datetimes: bool = True) -> Dict[str, st
 
 
 def infer_categoricals(
-    df: pd.DataFrame, 
-    max_unique: int = 30, 
+    df: pd.DataFrame,
+    max_unique: int = 30,
     top_n: int = 30,
     exclude_patterns: List[re.Pattern] | None = None,
 ) -> Dict[str, list]:

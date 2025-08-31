@@ -292,6 +292,7 @@ def _persist_env_defaults(target_root: Path, env_name: str, kernel_name: str, pr
     envf = target_root / ".env"
     envf.touch(exist_ok=True)
     text = envf.read_text(encoding="utf-8") if envf.exists() else ""
+
     def upsert(key: str, val: str) -> None:
         nonlocal text
         if not val:
