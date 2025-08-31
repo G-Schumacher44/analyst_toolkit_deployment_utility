@@ -10,58 +10,12 @@ from __future__ import annotations
 import os
 import shutil
 from pathlib import Path
-from typing import Optional, Any, IO, Protocol
+from typing import Optional
 from importlib import resources
 
-
-# Rich import with robust fallback and mypy-friendly types
-class _PrintProto(Protocol):
-    def __call__(
-        self,
-        *objects: Any,
-        sep: str = ...,
-        end: str = ...,
-        file: IO[str] | None = ...,
-        flush: bool = ...,
-    ) -> None:  # pragma: no cover - interface
-        ...
-
-try:
-    from rich import print as _print
-    from rich.console import Console as _Console
-    from rich.prompt import Prompt as _Prompt
-except Exception:  # minimal fallback if rich is unavailable
-    import builtins as _builtins
-
-    def _print(
-        *objects: Any,
-        sep: str = " ",
-        end: str = "\n",
-        file: IO[str] | None = None,
-        flush: bool = False,
-    ) -> None:
-        _builtins.print(*objects, sep=sep, end=end, file=file, flush=flush)
-
-    class _Console:
-        def print(
-            self,
-            *objects: Any,
-            sep: str = " ",
-            end: str = "\n",
-            file: IO[str] | None = None,
-            flush: bool = False,
-        ) -> None:
-            _builtins.print(*objects, sep=sep, end=end, file=file, flush=flush)
-
-    class _Prompt:
-        @staticmethod
-        def ask(msg, choices=None, default=None):
-            return default if default is not None else (choices[0] if choices else "")
-
-# Public names used by the module
-print: _PrintProto = _print
-Console = _Console
-Prompt = _Prompt
+from rich import print
+from rich.console import Console
+from rich.prompt import Prompt
 
 from .utils import ensure_dir, copy_file, update_yaml_key, run, conda_exists, register_ipykernel, is_interactive
 from . import infer_configs as ic
