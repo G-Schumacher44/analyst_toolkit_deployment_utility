@@ -9,16 +9,16 @@ from __future__ import annotations
 
 import os
 import shutil
+from importlib import resources
 from pathlib import Path
 from typing import Optional
-from importlib import resources
 
 from rich import print
 from rich.console import Console
 from rich.prompt import Prompt
 
-from .utils import ensure_dir, copy_file, update_yaml_key, run, conda_exists, register_ipykernel, is_interactive
 from . import infer_configs as ic
+from .utils import conda_exists, copy_file, ensure_dir, is_interactive, register_ipykernel, run, update_yaml_key
 
 console = Console()
 

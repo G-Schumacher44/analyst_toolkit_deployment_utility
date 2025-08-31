@@ -16,9 +16,8 @@ from typing import Optional
 import typer
 from rich import print
 
-from .bootstrap import bootstrap
 from . import infer_configs as ic
-
+from .bootstrap import bootstrap
 
 app = typer.Typer(
     add_completion=False,

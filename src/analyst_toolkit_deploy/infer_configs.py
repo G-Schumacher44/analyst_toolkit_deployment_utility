@@ -7,10 +7,10 @@ validation, certification, and outlier detection.
 
 from __future__ import annotations
 
+import glob
 import os
 import re
-import glob
-from typing import Dict, Any, List
+from typing import Any, Dict, List
 
 import pandas as pd
 import yaml
