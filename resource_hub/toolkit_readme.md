@@ -80,10 +80,10 @@ The system is human readable and YAML-driven — for your team, stakeholders, an
 
 <details><summary>📎 Resource Hub Links</summary>
 
-- [🧭 Config Guide](resource_hub/config_guide.md) — Overview of all YAML configuration files
+- [🧭 Config Guide](toolkit_config_guide.md) — Overview of all YAML configuration files
 - [📦 Config Template Bundle (ZIP)](resource_hub/config.zip) — Full set of starter YAMLs for each module
-- [📘 Usage Guide](resource_hub/usage_guide.md) — Running the toolkit via notebooks or CLI
-- [📗 Notebook Usage Guide](resource_hub/notebook_usage_guide.md) — Full breakdown of how each module is used in notebooks
+- [📘 Usage Guide](toolkit_readme.md) — Running the toolkit via notebooks or CLI
+- [📗 Notebook Usage Guide](notebook_usage_guide.md) — Full breakdown of how each module is used in notebooks
 </details>
 
 <details>
@@ -183,7 +183,7 @@ validation:
       expected_columns: [...]
 ```
 
-For full structure and explanation, [📘 Read the Full Configuration Guide](resource_hub/config_guide.md)
+For full structure and explanation, [📘 Read the Full Configuration Guide](toolkit_config_guide.md)
 
 
 ---
@@ -284,7 +284,7 @@ python -m analyst_toolkit.run_toolkit_pipeline --config config/run_toolkit_confi
 
 ```
 
->For full structure and explanation, [📘 Read the Full Usage Guide](resource_hub/usage_guide.md) 
+>For full structure and explanation, [📘 Read the Full Usage Guide](toolkit_readme.md) 
 
 </details>
 
@@ -325,9 +325,9 @@ This project is licensed under the [MIT License](LICENSE).
   &nbsp;·&nbsp;
   <a href="deployment_guide.md">🚀 <b>Project Deployment Guide</b></a>
   &nbsp;·&nbsp;
-  <a href="deploment_setup_guide.md">🔧 <b>Deployment  Setup</b></a>
+  <a href="deployment_setup_guide.md">🔧 <b>Deployment  Setup</b></a>
   &nbsp;·&nbsp;
-  <a href="toolkit_usage_guide">📘 <b>Toolkit Usage</b></a>
+  <a href="toolkit_readme.md">📘 <b>Toolkit Usage</b></a>
   &nbsp;·&nbsp;
   <a href="notebook_usage_guide.md">📓 <b>Notebook Usage</b></a>
   &nbsp;·&nbsp;

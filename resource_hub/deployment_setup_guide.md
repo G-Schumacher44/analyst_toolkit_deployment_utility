@@ -106,7 +106,7 @@ python -m analyst_toolkit.run_toolkit_pipeline --config config/run_toolkit_confi
   &nbsp;·&nbsp;
   <a href="deployment_setup_guide.md">🔧 <b>Deployment Setup</b></a>
   &nbsp;·&nbsp;
-  <a href="toolkit_usage_guide.md">📘 <b>Toolkit Usage</b></a>
+  <a href="toolkit_readme.md">📘 <b>Toolkit Usage</b></a>
   &nbsp;·&nbsp;
   <a href="notebook_usage_guide.md">📓 <b>Notebook Usage</b></a>
   &nbsp;·&nbsp;
