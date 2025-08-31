@@ -30,7 +30,6 @@ def _write_yaml(path: str, data: Dict[str, Any]) -> None:
         yaml.safe_dump(data, f, sort_keys=False, allow_unicode=True)
 
 
-
 def _find_entry_csv(root: str) -> str:
     """Infer the input CSV from config or a single file under data/raw.
 
@@ -58,7 +57,6 @@ def _find_entry_csv(root: str) -> str:
     )
 
 
-
 def infer_types(df: pd.DataFrame, detect_datetimes: bool = True) -> Dict[str, str]:
     """Map each column to a simple dtype label; optionally detect datetimes.
 
@@ -80,7 +78,6 @@ def infer_types(df: pd.DataFrame, detect_datetimes: bool = True) -> Dict[str, st
                     continue
         types[col] = dtype
     return types
-
 
 
 def infer_categoricals(
@@ -112,7 +109,6 @@ def infer_categoricals(
             if vals:
                 cats[col] = sorted(list(set(vals)))
     return cats
-
 
 
 def infer_numeric_ranges(df: pd.DataFrame) -> Dict[str, Dict[str, float]]:
@@ -156,7 +152,6 @@ def build_validation_config(input_path_rel: str, cols, types, cats, ranges, fail
             },
         },
     }
-
 
 
 def build_outlier_config(input_path_rel: str, numeric_cols) -> Dict[str, Any]:

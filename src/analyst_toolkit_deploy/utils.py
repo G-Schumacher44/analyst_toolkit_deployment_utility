@@ -9,7 +9,6 @@ from typing import Iterable, Optional
 import yaml
 
 
-
 def ensure_dir(p: Path) -> None:
     """Create a directory (and parents) if missing, and drop a .gitkeep.
 
@@ -39,7 +38,6 @@ def copy_file(src: Path, dst: Path, overwrite: bool = True) -> None:
     shutil.copy2(src, dst)
 
 
-
 def update_yaml_key(path: Path, key: str, value) -> None:
     """Update (or insert) a top-level YAML key in-place.
 
@@ -57,7 +55,6 @@ def update_yaml_key(path: Path, key: str, value) -> None:
         yaml.safe_dump(data, sort_keys=False, allow_unicode=True),
         encoding="utf-8",
     )
-
 
 
 def run(
@@ -81,11 +78,9 @@ def run(
     return proc.returncode
 
 
-
 def conda_exists() -> bool:
     """Return True if `conda` is discoverable on PATH."""
     return shutil.which("conda") is not None
-
 
 
 def register_ipykernel(name: str, display_name: str, python_exec: Path) -> None:
@@ -109,7 +104,6 @@ def register_ipykernel(name: str, display_name: str, python_exec: Path) -> None:
         ],
         check=False,
     )
-
 
 
 def is_interactive() -> bool:

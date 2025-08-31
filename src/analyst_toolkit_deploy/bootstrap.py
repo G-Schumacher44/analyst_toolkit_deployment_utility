@@ -365,7 +365,6 @@ def _persist_env_defaults(
     envf.write_text(text, encoding="utf-8")
 
 
-
 def _setup_conda(target_root: Path, env_name: str, kernel_name: str, reuse: bool, force_recreate: bool) -> None:
     if not conda_exists():
         console.print("[red]conda not found in PATH[/red]")
@@ -454,7 +453,6 @@ def _setup_conda(target_root: Path, env_name: str, kernel_name: str, reuse: bool
     )
 
 
-
 def _setup_venv(target_root: Path, env_name: str, kernel_name: str, force_recreate: bool) -> None:
     venv_dir = target_root / ".venv"
     if force_recreate and venv_dir.exists():
@@ -475,7 +473,6 @@ def _setup_venv(target_root: Path, env_name: str, kernel_name: str, force_recrea
         "python.exe" if os.name == "nt" else "python"
     )
     register_ipykernel(env_name, kernel_name, py_exec)
-
 
 
 def bootstrap(
