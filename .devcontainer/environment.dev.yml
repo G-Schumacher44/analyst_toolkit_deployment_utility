@@ -1,0 +1,20 @@
+name: analyst-toolkit-dev
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.11
+  - pip
+  # Core dependencies from pyproject.toml
+  - typer
+  - rich
+  - pandas
+  - numpy
+  - pyyaml
+  # Development and linting tools
+  - black
+  - isort
+  - flake8
+  - mypy
+  - ipykernel # For Jupyter kernel registration
+  - hatch # For building the package

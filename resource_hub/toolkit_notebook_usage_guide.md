@@ -1,3 +1,14 @@
+<p align="center">
+  <img src="../repo_files/analyst_toolkit_banner.png" alt="Analyst Toolkit Logo" width="1000"/>
+  <br>
+  <em>Data QA + Cleaning Engine</em>
+</p>
+<p align="center">
+  <img alt="MIT License" src="https://img.shields.io/badge/license-MIT-blue">
+  <img alt="Status" src="https://img.shields.io/badge/status-stable-brightgreen">
+  <img alt="Version" src="https://img.shields.io/badge/version-v0.1.0-blueviolet">
+</p>
+
 
 ## 🔰 Analyst Toolkit Notebook Usage Guide
 
@@ -60,13 +71,12 @@ from analyst_toolkit.m01_diagnostics import run_diag_pipeline
 from analyst_toolkit.m00_utils.config_loader import load_config
 
 config = load_config("config/diagnostics_config_template.yaml")
-diag_cfg = config.get("diagnostics", {})
 run_id = config.get("run_id", "demo_run")
 notebook_mode = config.get("notebook", True)
 
 df = run_diag_pipeline(
     df=df,
-    config=diag_cfg,
+    config=config,
     notebook=notebook_mode,
     run_id=run_id
 )
@@ -83,13 +93,12 @@ from analyst_toolkit.m02_validation import run_validation_pipeline
 from analyst_toolkit.m00_utils.config_loader import load_config
 
 config = load_config("config/validation_config_template.yaml")
-val_cfg = config.get("validation", {})
 run_id = config.get("run_id", "demo_run")
 notebook_mode = config.get("notebook", True)
 
 df = run_validation_pipeline(
     df=df,
-    config=val_cfg,
+    config=config,
     notebook=notebook_mode,
     run_id=run_id
 )
@@ -107,14 +116,13 @@ from analyst_toolkit.m00_utils.config_loader import load_config
 
 # Load configuration and extract relevant values
 config = load_config("config/normalization_config_template.yaml")
-norm_cfg = config.get("normalization", {})
 run_id = config.get("run_id", "demo_run")
 notebook_mode = config.get("notebook", True)
 
 # Run normalization module with notebook-specific arguments
 df = run_normalization_pipeline(
     df=df,
-    config=norm_cfg,
+    config=config,
     notebook=notebook_mode,
     run_id=run_id
 )
@@ -131,13 +139,12 @@ from analyst_toolkit.m04_duplicates import run_duplicates_pipeline
 from analyst_toolkit.m00_utils.config_loader import load_config
 
 config = load_config("config/duplicates_config_template.yaml")
-dupes_cfg = config.get("duplicates", {})
 run_id = config.get("run_id", "demo_run")
 notebook_mode = config.get("notebook", True)
 
 df = run_duplicates_pipeline(
     df=df,
-    config=dupes_cfg,
+    config=config,
     notebook=notebook_mode,
     run_id=run_id
 )
@@ -153,13 +160,12 @@ from analyst_toolkit.m05_detect_outliers.run_detection_pipeline import run_outli
 from analyst_toolkit.m00_utils.config_loader import load_config
 
 config = load_config("config/outlier_config_template.yaml")
-detect_cfg = config.get("outlier_detection", {})
 run_id = config.get("run_id", "demo_run")
 notebook_mode = config.get("notebook", True)
 
 df_outliers_flagged, detection_results = run_outlier_detection_pipeline(
     df=df,
-    config=detect_cfg,
+    config=config,
     notebook=notebook_mode,
     run_id=run_id
 )
@@ -175,14 +181,13 @@ Flags potential outliers and logs summary statistics. Outlier scores or flags ma
 from analyst_toolkit.m06_outlier_handling import run_outlier_handling_pipeline
 from analyst_toolkit.m00_utils.config_loader import load_config
 
-config = load_config("config/outlier_handle_config_template.yaml")
-handle_cfg = config.get("outlier_handling", {})
+config = load_config("config/handling_config_template.yaml")
 run_id = config.get("run_id", "demo_run")
 notebook_mode = config.get("notebook", True)
 
 df = run_outlier_handling_pipeline(
     df=df,
-    config=handle_cfg,
+    config=config,
     notebook=notebook_mode,
     run_id=run_id
 )
@@ -199,13 +204,12 @@ from analyst_toolkit.m07_imputation import run_imputation_pipeline
 from analyst_toolkit.m00_utils.config_loader import load_config
 
 config = load_config("config/imputation_config_template.yaml")
-imp_cfg = config.get("imputation", {})
 run_id = config.get("run_id", "demo_run")
 notebook_mode = config.get("notebook", True)
 
 df = run_imputation_pipeline(
     df=df,
-    config=imp_cfg,
+    config=config,
     notebook=notebook_mode,
     run_id=run_id
 )
@@ -222,13 +226,12 @@ from analyst_toolkit.m10_final_audit import run_final_audit_pipeline
 from analyst_toolkit.m00_utils.config_loader import load_config
 
 config = load_config("config/final_audit_config_template.yaml")
-audit_cfg = config.get("final_audit", {})
 run_id = config.get("run_id", "demo_run")
 notebook_mode = config.get("notebook", True)
 
 df = run_final_audit_pipeline(
     df=df,
-    config=audit_cfg,
+    config=config,
     notebook=notebook_mode,
     run_id=run_id
 )
@@ -252,20 +255,6 @@ df_final, all_results = run_toolkit_pipeline(config)
 
 Let us know if you’d like module-by-module walkthroughs or demo notebooks.
 
-___
-
 <p align="center">
-  <a href="README.md">🏠 <b>Main README</b></a>
-  &nbsp;·&nbsp;
-  <a href="deployment_guide.md">🚀 <b>Project Deployment Guide</b></a>
-  &nbsp;·&nbsp;
-  <a href="deploment_setup_guide.md">🔧 <b>Deployment  Setup</b></a>
-  &nbsp;·&nbsp;
-  <a href="toolkit_usage_guide">📘 <b>Toolkit Usage</b></a>
-  &nbsp;·&nbsp;
-  <a href="notebook_usage_guide.md">📓 <b>Notebook Usage</b></a>
-  &nbsp;·&nbsp;
-  <a href="toolkit_readme.md">📘 <b>Toolkit README</b></a>
-  &nbsp;·&nbsp;
-  <a href="toolkit_config_guide.md">⚙️ <b>Config Guide</b></a>
+  🔙 <a href="../README.md"><strong>Return to Project README</strong></a>
 </p>

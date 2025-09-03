@@ -6,13 +6,12 @@
 # own dedicated YAML file within its module directory.
 
 # --- Global Run Settings ---
-run_id: ""
+run_id: "CLI_2_QA"
 notebook: true
 
 # --- Pipeline Entry Point ---
 # The single, explicit path for the initial raw data load.
-# The deploy utility will populate this based on your selected dataset.
-pipeline_entry_path: ""
+pipeline_entry_path: "data/raw/synthetic_penguins_v3.5.csv"
 
 
 # ===================================================================

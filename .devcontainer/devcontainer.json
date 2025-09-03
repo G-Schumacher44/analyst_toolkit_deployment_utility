@@ -1,24 +1,35 @@
 {
-  "name": "Analyst Toolkit Deploy Dev",
-  "image": "mcr.microsoft.com/devcontainers/base:jammy",
+  "name": "Analyst Toolkit - Dev Container",
+  // Use a pre-built Miniconda image for faster setup
+  "image": "mcr.microsoft.com/devcontainers/miniconda:0-3",
+  // Features to add to the dev container.
   "features": {
-    "ghcr.io/devcontainers/features/conda:1": {
-      "version": "latest"
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "installZsh": true,
+      "configureZshAsDefaultShell": true
     }
   },
-  "postCreateCommand": "bash .devcontainer/postCreate.sh",
+  // This command runs after the container is created.
+  // It sets up the entire development environment automatically.
+  "postCreateCommand": "conda env update --file .devcontainer/environment.dev.yml --name base && pip install -e . && python -m ipykernel install --user --name analyst-toolkit-dev --display-name \"Python (Toolkit Dev)\"",
+  // Configure tool-specific properties.
   "customizations": {
+    // Configure properties specific to VS Code.
     "vscode": {
+      // Set *default* container specific settings.json values on container create.
       "settings": {
-        "python.defaultInterpreterPath": "/opt/conda/envs/analyst_toolkit_deploy/bin/python",
-        "python.analysis.extraPaths": ["./src"],
-        "python.envFile": "${workspaceFolder}/.env"
+        "python.defaultInterpreterPath": "/opt/conda/bin/python",
+        "python.linting.enabled": true,
+        "python.formatting.provider": "black"
       },
+      // Add the IDs of extensions you want installed when the container is created.
       "extensions": [
         "ms-python.python",
-        "ms-toolsai.jupyter"
+        "ms-python.vscode-pylance",
+        "ms-toolsai.jupyter",
+        "charliermarsh.ruff",
+        "njpwerner.autodocstring"
       ]
     }
   }
 }
-

@@ -1,14 +1,29 @@
-# Byte-compiled / cache
+# Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *.pyo
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+build/
+dist/
+develop-eggs/
+eggs/
+.eggs/
+*.egg-info/
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Unit test / coverage reports
 .pytest_cache/
 .mypy_cache/
-
-# Virtual environments
-.venv/
-venv/
-env/
+.coverage
+.cache
 
 # OS junk
 .DS_Store
@@ -19,6 +34,15 @@ env/
 # Local env
 .env
 
+# IDEs and editors
+.idea/
+.vscode/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
 # Data and exports (tracked via gitkeep/README only)
 data/**
 !data/**/.gitkeep
@@ -28,7 +52,4 @@ exports/**
 !exports/**/.gitkeep
 
 # Build/coverage (if added later)
-dist/
-build/
 coverage/
-
