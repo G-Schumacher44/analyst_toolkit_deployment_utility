@@ -36,7 +36,7 @@ In a single command, you can:
 2.  **Install the Deployment Utility**
     In your terminal, install the utility using `pip`.
     ```bash
-    pip install "git+https://github.com/G-Schumacher44/analyst_toolkit_deployment_utility.git@main"
+    pip install "git+https://github.com/G-Schumacher44/analyst_toolkit_deployment_utility.git@v0.2.0"
     ```
 
 3.  **Scaffold Your Project**
