@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="../logo_img/analyst_toolkit_banner.png" width="1000"/>
+  <img src="../repo_files/analyst_toolkit_banner.png" alt="Analyst Toolkit Logo" width="1000"/>
   <br>
   <em>Data QA + Cleaning Engine</em>
 </p>
@@ -439,17 +439,5 @@ final_audit:
 ---
 
 <p align="center">
-  <a href="../README.md">🏠 <b>Main README</b></a>
-  &nbsp;·&nbsp;
-  <a href="deployment_guide.md">🚀 <b>Project Deployment Guide</b></a>
-  &nbsp;·&nbsp;
-  <a href="deployment_setup_guide.md">🔧 <b>Deployment  Setup</b></a>
-  &nbsp;·&nbsp;
-  <a href="toolkit_readme.md">📘 <b>Toolkit Usage</b></a>
-  &nbsp;·&nbsp;
-  <a href="notebook_usage_guide.md">📓 <b>Notebook Usage</b></a>
-  &nbsp;·&nbsp;
-  <a href="toolkit_readme.md">📘 <b>Toolkit README</b></a>
-  &nbsp;·&nbsp;
-  <a href="toolkit_config_guide.md">⚙️ <b>Config Guide</b></a>
+  🔙 <a href="../README.md"><strong>Return to Project README</strong></a>
 </p>

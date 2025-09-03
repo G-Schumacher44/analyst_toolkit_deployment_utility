@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "analyst_toolkit_deploy"
-version = "0.1.2"
+version = "0.2.0"
 description = "Scaffold and configuration tools for the Analyst Toolkit"
 readme = "README.md"
 license = { text = "MIT" }
@@ -19,6 +19,22 @@ dependencies = [
   "numpy>=1.24",
   "PyYAML>=6.0",
 ]
+keywords = ["data-analysis", "etl", "scaffolding", "template", "data-science", "automation"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Software Development :: Code Generators",
+    "Topic :: Utilities",
+]
 
 [project.scripts]
 analyst-deploy = "analyst_toolkit_deploy.cli:main_deploy"
@@ -30,6 +46,9 @@ repository = "https://github.com/G-Schumacher44/analyst_toolkit_deployment_utili
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/analyst_toolkit_deploy"]
+include = [
+  "/src/analyst_toolkit_deploy/templates"
+]
 
 [tool.hatch.build.targets.sdist]
 include = [

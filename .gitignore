@@ -1,9 +1,17 @@
 # Byte-compiled / cache
 __pycache__/
 *.py[cod]
-*.pyo
 .pytest_cache/
 .mypy_cache/
+
+# C extensions
+*.so
+
+# Distribution / packaging
+develop-eggs/
+eggs/
+.eggs/
+*.egg-info/
 
 # Virtual environments
 .venv/
@@ -14,6 +22,8 @@ env/
 
 # OS junk
 .DS_Store
+Thumbs.db
+desktop.ini
 
 # Jupyter
 .ipynb_checkpoints/
@@ -45,3 +55,6 @@ coverage/
 .flake8
 mypy.ini
 .pre-commit-config.yaml
+
+# Local archive
+doc_archive/
