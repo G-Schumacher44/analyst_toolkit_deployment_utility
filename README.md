@@ -36,7 +36,7 @@ In a single command, you can:
 2.  **Install the Deployment Utility**
     In your terminal, install the utility using `pip`.
     ```bash
-    pip install "git+https://github.com/G-Schumacher44/analyst_toolkit_deployment_utility.git@v0.2.2"
+    pip install "git+https://github.com/G-Schumacher44/analyst_toolkit_deployment_utility.git@v0.2.3"
     ```
 
 3.  **Scaffold Your Project**
@@ -49,7 +49,7 @@ In a single command, you can:
     Navigate into your new project, install the core toolkit, and launch the notebook.
     ```bash
     cd my-new-analysis
-    pip install "git+https://github.com/G-Schumacher44/analyst_toolkit.git@v0.2.2"
+    pip install "git+https://github.com/G-Schumacher44/analyst_toolkit.git@v0.2.3"
     jupyter lab notebooks/toolkit_template.ipynb
     ```
 
