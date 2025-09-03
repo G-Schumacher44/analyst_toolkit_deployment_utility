@@ -89,7 +89,7 @@ The notebook is designed for an iterative, cell-by-cell workflow that separates 
 
 1.  **Run a module cell** (e.g., the "M01 - Diagnostics" cell).
 2.  **Inspect the output dashboard** to understand the results.
-3.  **Edit the corresponding YAML file** in the `config/` directory to refine the rules (e.g., add an expected column in `validation_config_template.yaml`).
+3.  **Edit the corresponding YAML file** in the `config/` directory to refine the rules (e.g., add an expected column in `validation_config.yaml`).
 4.  **Re-run the cell** to apply your new configuration.
 
 This loop allows you to build a robust, auditable data pipeline without ever modifying the notebook's Python code.
