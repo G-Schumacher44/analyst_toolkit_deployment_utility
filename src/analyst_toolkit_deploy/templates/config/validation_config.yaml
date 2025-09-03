@@ -9,7 +9,7 @@
 
 # 📥 Execution context
 notebook: true
-run_id: "0002_QA"
+run_id: ""
 logging: "auto"            # 'on', 'off', or 'auto' (auto = enabled in notebook mode)
 
 # 🔎 Validation settings
