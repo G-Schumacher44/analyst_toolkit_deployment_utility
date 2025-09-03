@@ -8,7 +8,7 @@
 
 # 📥 Execution context
 notebook: true               # Show inline output in notebooks
-run_id: "0002_QA"            # Identifier for tagging output files
+run_id: ""            # Identifier for tagging output files
 logging: "auto"                # Options: 'on', 'off', or 'auto' (auto = on in notebook mode)
 
 # ⚙️ Diagnostics settings
