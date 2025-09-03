@@ -7,7 +7,7 @@
 <p align="center">
   <img alt="MIT License" src="https://img.shields.io/badge/license-MIT-blue">
   <img alt="Status" src="https://img.shields.io/badge/status-active-brightgreen">
-  <img alt="Version" src="https://img.shields.io/badge/version-v0.2.0-blueviolet">
+  <img alt="Version" src="https://img.shields.io/badge/version-v0.2.2-blueviolet">
   <a href="https://github.com/G-Schumacher44/analyst_toolkit_deployment_utility/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/G-Schumacher44/analyst_toolkit_deployment_utility/actions/workflows/ci.yml/badge.svg?branch=main"></a>
   <a href="https://github.com/codespaces/new/G-Schumacher44/analyst_toolkit_deployment_utility?quickstart=1"><img alt="Open in Codespaces" src="https://github.com/codespaces/badge.svg"></a>
 </p>
@@ -36,7 +36,7 @@ In a single command, you can:
 2.  **Install the Deployment Utility**
     In your terminal, install the utility using `pip`.
     ```bash
-    pip install "git+https://github.com/G-Schumacher44/analyst_toolkit_deployment_utility.git@v0.2.0"
+    pip install "git+https://github.com/G-Schumacher44/analyst_toolkit_deployment_utility.git@v0.2.2"
     ```
 
 3.  **Scaffold Your Project**
@@ -49,7 +49,7 @@ In a single command, you can:
     Navigate into your new project, install the core toolkit, and launch the notebook.
     ```bash
     cd my-new-analysis
-    pip install "git+https://github.com/G-Schumacher44/analyst_toolkit.git@v0.2.0"
+    pip install "git+https://github.com/G-Schumacher44/analyst_toolkit.git@v0.2.2"
     jupyter lab notebooks/toolkit_template.ipynb
     ```
 
@@ -84,7 +84,7 @@ The goal is simple: let you spend less time on setup and more time finding the s
 <details>
 <summary><strong>🫆 Version Release Notes</strong></summary>
 
-**v0.2.0**
+**v0.2.2**
   - **Major Documentation Overhaul**: Complete rewrite of all documentation for clarity and accuracy. Introduced a `USER_GUIDE.md` for users and a `DEVELOPMENT.md` for contributors, centralizing all guides in `resource_hub`.
   - **Modernized Project Scaffolding**: The `toolkit_template.ipynb` included in new projects is now fully refactored to use the modern, direct-call API of the `analyst_toolkit v0.2.0`.
   - **Enhanced Reproducibility**: Added a `Dockerfile` for running the utility in an isolated environment and a fully automated `.devcontainer` setup for a one-click development experience in GitHub Codespaces.

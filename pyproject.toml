@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "analyst_toolkit_deploy"
-version = "0.2.0"
+version = "0.2.2"
 description = "Scaffold and configuration tools for the Analyst Toolkit"
 readme = "README.md"
 license = { text = "MIT" }
