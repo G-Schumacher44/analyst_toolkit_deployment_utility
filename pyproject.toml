@@ -66,10 +66,6 @@ profile = "black"
 line_length = 160
 src_paths = ["src"]
 
-[tool.flake8]
-max-line-length = 160
-extend-ignore = ["E203", "W503"]
-
 [tool.mypy]
 python_version = "3.11"
 warn_unused_configs = true
