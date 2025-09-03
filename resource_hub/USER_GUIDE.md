@@ -20,7 +20,7 @@ Welcome! This guide provides a complete walkthrough for using the **Analyst Tool
 First, install the utility from GitHub using `pip`. This command will download and install the latest version.
 
 ```bash
-pip install "git+https://github.com/G-Schumacher44/analyst_toolkit_deployment_utility.git@v0.2.4"
+pip install "git+https://github.com/G-Schumacher44/analyst_toolkit_deployment_utility.git@v0.2.5"
 ```
 
 > **Note**: This utility requires Python 3.9 or higher.
@@ -72,7 +72,7 @@ The deployment utility sets up the project structure, but the analysis is perfor
 cd my-new-analysis
 
 # Install the core toolkit needed to run the pipeline
-pip install "git+https://github.com/G-Schumacher44/analyst_toolkit.git@v0.2.4"
+pip install "git+https://github.com/G-Schumacher44/analyst_toolkit.git@v0.2.0"
 ```
 
 #### Step 2: Launch the Notebook

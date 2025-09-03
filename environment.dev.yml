@@ -2,18 +2,17 @@ name: analyst_toolkit_deploy
 channels:
   - conda-forge
 dependencies:
-  - python=3.10
+  - python=3.11 # Aligned with Dockerfile for consistency
   - pip
+  # Core development and notebook tools
   - ipykernel
   - jupyter
-  - pandas
-  - numpy
   - scipy
-  - pyyaml
+  # Linting, formatting, and testing tools
   - black
   - flake8
   - pytest
-  - pyyaml
-  - pip:
-      - typer
-      - rich
+
+# Runtime dependencies like pandas, numpy, typer, and rich are defined in
+# pyproject.toml and installed by the `pip install -e .` command in your
+# devcontainer.json. This avoids duplication and ensures a single source of truth.

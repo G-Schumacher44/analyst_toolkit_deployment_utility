@@ -4,19 +4,22 @@ FROM python:3.11-slim
 # Set the working directory in the container
 WORKDIR /app
 
-# Copy the project files into the container
-COPY . .
-
 # Install poetry for robust dependency management
-# (This is a best practice for containerized Python apps)
 RUN pip install poetry
 
-# Use poetry to install dependencies from pyproject.toml
-# --no-root prevents installing the project itself yet, which is a caching optimization
+# Copy only the files needed for dependency installation first.
+# This leverages Docker's layer caching, so dependencies are not re-installed on every code change.
+COPY pyproject.toml poetry.lock* ./
+
+# Use poetry to install dependencies.
+# --no-root prevents installing the project itself, which we'll do after copying the source code.
 RUN poetry config virtualenvs.create false && \
     poetry install --no-interaction --no-ansi --no-root
 
-# Now, install the project itself
+# Now, copy the rest of the project source code into the container
+COPY . .
+
+# Install the project itself
 RUN pip install .
 
 # Set the entrypoint to bash to allow interactive use
