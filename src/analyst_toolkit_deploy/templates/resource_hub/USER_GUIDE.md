@@ -20,7 +20,7 @@ Welcome! This guide provides a complete walkthrough for using the **Analyst Tool
 First, install the utility from GitHub using `pip`. This command will download and install the latest version.
 
 ```bash
-pip install "git+https://github.com/G-Schumacher44/analyst_toolkit_deployment_utility.git@v0.2.0"
+pip install "git+https://github.com/G-Schumacher44/analyst_toolkit_deployment_utility.git@v0.2.2"
 ```
 
 > **Note**: This utility requires Python 3.9 or higher.
