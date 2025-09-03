@@ -52,7 +52,6 @@ build/
 coverage/
 
 # Local tool configs (migrated to pyproject)
-.flake8
 mypy.ini
 .pre-commit-config.yaml
 
