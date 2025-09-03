@@ -2,7 +2,7 @@ name: analyst_toolkit_deploy
 channels:
   - conda-forge
 dependencies:
-  - python=3.11 # Aligned with Dockerfile for consistency
+  - python=3.12
   - pip
   # Core development and notebook tools
   - ipykernel
