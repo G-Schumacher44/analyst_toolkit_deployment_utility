@@ -87,7 +87,8 @@ The goal is simple: let you spend less time on setup and more time finding the s
 **v0.2.5**
   - **Dependency & Versioning Update**: Synchronized package version to `v0.2.5`.
   - **Documentation**: Updated `README.md` with the latest version badge and release notes.
-  - *Note: You can add other specific changes for this version here.*
+  - **Notebook Template**: Filepath issues corrected - *works right out of the box*
+  - **Config**: Templates Updated
 
 **v0.2.2**
   - **Major Documentation Overhaul**: Complete rewrite of all documentation for clarity and accuracy. Introduced a `USER_GUIDE.md` for users and a `DEVELOPMENT.md` for contributors, centralizing all guides in `resource_hub`.
