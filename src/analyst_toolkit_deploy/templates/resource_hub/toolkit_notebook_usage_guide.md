@@ -80,7 +80,7 @@ config = load_config("config/diagnostics_config_template.yaml")
 run_id = config.get("run_id", "demo_run")
 notebook_mode = config.get("notebook", True)
 
-df = run_diag_pipeline(
+run_diag_pipeline(
     df=df,
     config=config,
     notebook=notebook_mode,
@@ -102,7 +102,7 @@ config = load_config("config/validation_config_template.yaml")
 run_id = config.get("run_id", "demo_run")
 notebook_mode = config.get("notebook", True)
 
-df = run_validation_pipeline(
+df_validated = run_validation_pipeline(
     df=df,
     config=config,
     notebook=notebook_mode,
@@ -135,6 +135,34 @@ df = run_normalization_pipeline(
 ```
 
 Returns cleaned `df` after applying normalization steps.
+
+Tip: datetime parsing options
+
+- Configure under `normalization.rules.parse_datetimes` in your YAML.
+- Supported keys:
+  - `format` or `formats` (list, tried in order)
+  - `errors`: `coerce` | `raise` | `ignore`
+  - `dayfirst`, `yearfirst`
+  - `utc`: parse/normalize to UTC (tz-aware)
+  - `make_naive`: drop tz info after parsing (keeps UTC wall time)
+
+Example YAML
+
+```yaml
+normalization:
+  rules:
+    parse_datetimes:
+      capture_date:
+        # single format or omit to infer
+        format: '%Y-%m-%d'
+        # or multiple formats, tried in order
+        # formats: ['%Y-%m-%d', '%m/%d/%Y']
+        errors: 'coerce'
+        utc: false
+        make_naive: true
+        # If you want failures on any bad value:
+        # errors: 'raise'  # module stops with a clear list of offending samples
+```
 
 ---
 

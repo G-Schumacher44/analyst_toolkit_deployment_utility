@@ -9,7 +9,7 @@
 
 # 📥 Execution context
 notebook: true
-run_id: ""
+run_id: "0002_QA"
 logging: "auto"            # Options: 'on', 'off', or 'auto'
 
 # 🔧 Normalization settings
@@ -96,9 +96,19 @@ normalization:
       capture_date:
         format: '%Y-%m-%d'
         errors: 'coerce'
+        # Optional timezone/format controls
+        # If your inputs include time zones and you want to normalize to UTC, set utc: true
+        # If downstream expects tz-naive timestamps (no timezone), set make_naive: true
+        utc: false
+        make_naive: true
+        # Optionally support multiple input formats (tried in order)
+        # formats: ['%Y-%m-%d', '%m/%d/%Y', '%Y.%m.%d']
       date_egg:
         format: '%Y-%m-%d'
         errors: 'coerce'
+        utc: false
+        make_naive: true
+        # formats: ['%Y-%m-%d', '%m/%d/%Y']
 
     # 🔬 Columns to preview in the report
     preview_columns:

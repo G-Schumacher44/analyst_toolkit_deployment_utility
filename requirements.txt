@@ -1,6 +1,6 @@
 ## Pinned dependencies to match environment.yml
 # Core analyst toolkit (pin to tag/commit for reproducibility)
-git+https://github.com/G-Schumacher44/analyst_toolkit.git@v0.2.0
+git+https://github.com/G-Schumacher44/analyst_toolkit.git@v0.2.1
 git+https://github.com/G-Schumacher44/analyst_toolkit_deployment_utility.git@v0.2.5
 
 # Notebook + analysis stack (pinned)
