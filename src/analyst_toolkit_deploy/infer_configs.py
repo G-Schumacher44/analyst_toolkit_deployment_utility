@@ -21,10 +21,8 @@ All 9 module configs are supported:
 from __future__ import annotations
 
 import glob
-import importlib.resources
 import os
 import re
-import textwrap
 from typing import Any, Dict, List, Optional
 
 import pandas as pd
@@ -98,13 +96,20 @@ def _load_from_gcs(gcs_path: str, sample_rows: Optional[int] = None) -> pd.DataF
     client = storage.Client()
     bucket = client.bucket(bucket_name)
 
-    manifest_blob = bucket.blob(f"{prefix}/_MANIFEST.json")
-    if manifest_blob.exists():
-        manifest = json.loads(manifest_blob.download_as_text())
-        blobs = [bucket.blob(f"{prefix}/{f}") for f in manifest.get("files", [])]
+    # Direct file path — skip manifest/glob logic
+    if prefix.endswith(".parquet") or prefix.endswith(".csv"):
+        blobs = [bucket.blob(prefix)]
     else:
-        all_blobs = list(client.list_blobs(bucket_name, prefix=f"{prefix}/"))
-        blobs = [b for b in all_blobs if b.name.endswith(".parquet") or b.name.endswith(".csv")]
+        manifest_blob = bucket.blob(f"{prefix}/_MANIFEST.json")
+        if manifest_blob.exists():
+            manifest = json.loads(manifest_blob.download_as_text())
+            raw_files = manifest.get("files", [])
+            # files entries may be bare strings or dicts with a "path" key
+            file_names = [f["path"] if isinstance(f, dict) else f for f in raw_files]
+            blobs = [bucket.blob(f"{prefix}/{f}") for f in file_names]
+        else:
+            all_blobs = list(client.list_blobs(bucket_name, prefix=f"{prefix}/"))
+            blobs = [b for b in all_blobs if b.name.endswith(".parquet") or b.name.endswith(".csv")]
 
     if not blobs:
         raise FileNotFoundError(f"No data files found at: {gcs_path}")
@@ -149,20 +154,6 @@ def _find_entry_csv(root: str) -> str:
         "config/run_toolkit_config.yaml or place exactly one CSV in data/raw/."
     )
 
-
-def _load_template(template_name: str) -> str:
-    """Load a bundled config template as a string."""
-    try:
-        pkg = importlib.resources.files("analyst_toolkit_deploy") / "templates" / "config" / template_name
-        return pkg.read_text(encoding="utf-8")
-    except Exception:
-        # Fallback: look relative to this file
-        here = os.path.dirname(__file__)
-        path = os.path.join(here, "templates", "config", template_name)
-        if os.path.exists(path):
-            with open(path, encoding="utf-8") as f:
-                return f.read()
-        return ""
 
 
 # ---------------------------------------------------------------------------
@@ -288,92 +279,249 @@ def build_outlier_config(input_path_rel: str, numeric_cols) -> Dict[str, Any]:
 # Enriched template builders — 6 judgment-gap configs
 # ---------------------------------------------------------------------------
 
-def build_diag_template(df: pd.DataFrame, input_path_rel: str) -> str:
-    """Diagnostics config — inject column list and shape as comments."""
-    base = _load_template("diag_config.yaml")
-    col_list = ", ".join(df.columns.tolist())
-    header = textwrap.dedent(f"""\
-        # diagnostics_config.yaml (generated template)
-        # Dataset shape: {df.shape[0]} rows × {df.shape[1]} cols
-        # Detected columns: {col_list}
-        # Set quality thresholds and skew limits below.
-        #
-        """)
-    return header + base
+def build_diag_config(df: pd.DataFrame, input_path_rel: str, types: Dict[str, str]) -> Dict[str, Any]:
+    """Diagnostics config — fully inferred from dataset schema."""
+    return {
+        "notebook": True,
+        "run_id": "",
+        "logging": "auto",
+        "diagnostics": {
+            "input_path": input_path_rel,
+            "profile": {
+                "run": True,
+                "settings": {
+                    "export": True,
+                    "as_csv": False,
+                    "export_path": "exports/reports/diagnostics/diagnostics_summary.xlsx",
+                    "checkpoint": False,
+                    "checkpoint_path": "exports/joblib/{run_id}/{run_id}_m02_diag_checkpoint.joblib",
+                    "show_inline": True,
+                    "include_samples": True,
+                    "include_metadata": True,
+                    "encoding": "utf-8",
+                    "max_rows": 5,
+                    "high_cardinality_threshold": 15,
+                    "quality_checks": {
+                        "skew_threshold": 2.0,
+                        "expected_dtypes": types,
+                    },
+                },
+            },
+            "plotting": {
+                "run": True,
+                "save_dir": "exports/plots/diagnostics/",
+            },
+        },
+    }
 
 
-def build_normalization_template(df: pd.DataFrame, input_path_rel: str, cats: Dict[str, list]) -> str:
-    """Normalization config — inject detected value samples as comments."""
-    base = _load_template("normalization_config.yaml")
-    lines = ["# normalization_config.yaml (generated template)"]
-    lines.append(f"# Dataset: {input_path_rel}")
-    lines.append("#")
-    lines.append("# Detected categorical values (use to fill in value_mappings below):")
-    for col, vals in cats.items():
-        lines.append(f"#   {col}: {vals[:10]}")
-    lines.append("#")
-    return "\n".join(lines) + "\n" + base
+def build_normalization_config(
+    df: pd.DataFrame,
+    input_path_rel: str,
+    cats: Dict[str, list],
+    types: Dict[str, str],
+    numeric_cols: List[str],
+) -> Dict[str, Any]:
+    """Normalization config — scaffold from inferred schema; value_mappings left empty for human/LLM."""
+    string_cat_cols = [
+        c for c in cats
+        if str(df[c].dtype) == "object" or str(df[c].dtype).startswith("category")
+    ]
+    datetime_cols = {
+        col: {"format": "%Y-%m-%d", "errors": "coerce", "utc": False, "make_naive": True}
+        for col, dtype in types.items()
+        if "datetime" in dtype
+    }
+    coerce_dtypes = {c: types[c] for c in numeric_cols if c in types}
+
+    return {
+        "notebook": True,
+        "run_id": "",
+        "logging": "auto",
+        "normalization": {
+            "run": True,
+            "rules": {
+                "rename_columns": {},
+                "standardize_text_columns": string_cat_cols,
+                "value_mappings": {col: {} for col in string_cat_cols},
+                "fuzzy_matching": {
+                    "run": False,
+                    "settings": {},
+                },
+                "parse_datetimes": datetime_cols,
+                "preview_columns": string_cat_cols,
+                "coerce_dtypes": coerce_dtypes,
+            },
+            "settings": {
+                "show_inline": True,
+                "export": True,
+                "as_csv": False,
+                "export_path": "exports/reports/normalization/normalization_report.xlsx",
+                "checkpoint": {
+                    "run": True,
+                    "checkpoint_path": "exports/joblib/{run_id}/{run_id}_m03_df_normalized.joblib",
+                },
+            },
+        },
+    }
 
 
-def build_dups_template(df: pd.DataFrame, input_path_rel: str) -> str:
-    """Duplicates config — inject column names as comments."""
-    base = _load_template("dups_config.yaml")
-    cols = df.columns.tolist()
-    header = textwrap.dedent(f"""\
-        # dups_config.yaml (generated template)
-        # Dataset: {input_path_rel}
-        # Available columns for subset_columns: {cols}
-        # Choose which columns define a unique record.
-        #
-        """)
-    return header + base
+def build_dups_config(df: pd.DataFrame, input_path_rel: str, exclude_re: list) -> Dict[str, Any]:
+    """Duplicates config — fully inferred; subset_columns pre-populated, user/LLM trims."""
+    subset_cols = [
+        c for c in df.columns
+        if not pd.api.types.is_numeric_dtype(df[c])
+        and not any(p.search(c) for p in exclude_re)
+    ]
+    return {
+        "notebook": True,
+        "run_id": "",
+        "logging": "auto",
+        "duplicates": {
+            "run": True,
+            "input_path": input_path_rel,
+            "subset_columns": subset_cols,
+            "keep": "first",
+            "mode": "remove",
+            "settings": {
+                "checkpoint": True,
+                "checkpoint_path": "exports/joblib/{run_id}/{run_id}_m04_dupes_checkpoint.joblib",
+                "export": True,
+                "export_path": "exports/reports/duplicates/duplicates_report.xlsx",
+                "export_format": "xlsx",
+                "show_inline": True,
+                "plotting": {
+                    "run": True,
+                    "save_dir": "exports/plots/duplicates/",
+                },
+            },
+        },
+    }
 
 
-def build_handling_template(df: pd.DataFrame, input_path_rel: str, numeric_cols: list) -> str:
-    """Outlier handling config — inject numeric column names as comments."""
-    base = _load_template("handling_config.yaml")
-    header = textwrap.dedent(f"""\
-        # handling_config.yaml (generated template)
-        # Dataset: {input_path_rel}
-        # Numeric columns (targets for outlier treatment): {numeric_cols}
-        # Choose strategy per column: clip | median | constant | drop
-        #
-        """)
-    return header + base
+def build_handling_config(input_path_rel: str, numeric_cols: List[str]) -> Dict[str, Any]:
+    """Outlier handling config — one entry per numeric col, defaulting to median."""
+    handling_specs: Dict[str, Any] = {"__global__": {"strategy": "none"}}
+    for col in numeric_cols:
+        handling_specs[col] = {"strategy": "median"}
+    handling_specs["__default__"] = {"strategy": "clip"}
+
+    return {
+        "notebook": True,
+        "run_id": "",
+        "logging": "auto",
+        "outlier_handling": {
+            "run": True,
+            "input_df_path": "exports/joblib/{run_id}_m05_outliers_flagged.joblib",
+            "detection_results_path": "exports/joblib/{run_id}_m05_detection_results.joblib",
+            "handling_specs": handling_specs,
+            "settings": {
+                "show_inline": True,
+                "export": {
+                    "run": True,
+                    "export_path": "exports/reports/outliers/handling/outlier_handling_report.xlsx",
+                    "as_csv": False,
+                },
+                "checkpoint": {
+                    "run": True,
+                    "checkpoint_path": "exports/joblib/{run_id}/{run_id}_m06_df_handled.joblib",
+                },
+            },
+        },
+    }
 
 
-def build_imputation_template(df: pd.DataFrame, input_path_rel: str) -> str:
-    """Imputation config — inject null rates and dtypes per column."""
-    base = _load_template("imputation_config.yaml")
-    null_info = []
+def build_imputation_config(df: pd.DataFrame, input_path_rel: str) -> Dict[str, Any]:
+    """Imputation config — strategy auto-selected per column dtype; only null cols included."""
+    strategies: Dict[str, Any] = {}
     for col in df.columns:
-        null_pct = round(df[col].isnull().mean() * 100, 1)
-        if null_pct > 0:
-            null_info.append(f"#   {col} ({df[col].dtype}): {null_pct}% null")
-    header = ["# imputation_config.yaml (generated template)"]
-    header.append(f"# Dataset: {input_path_rel}")
-    if null_info:
-        header.append("# Columns with missing values:")
-        header.extend(null_info)
-    else:
-        header.append("# No missing values detected.")
-    header.append("#")
-    return "\n".join(header) + "\n" + base
+        if df[col].isnull().any():
+            if pd.api.types.is_numeric_dtype(df[col]):
+                strategies[col] = "median"
+            elif "datetime" in str(df[col].dtype):
+                strategies[col] = {"strategy": "constant", "value": "1900-01-01"}
+            else:
+                strategies[col] = "mode"
+
+    return {
+        "notebook": True,
+        "run_id": "",
+        "logging": "auto",
+        "imputation": {
+            "run": True,
+            "input_path": "exports/joblib/{run_id}_m06_df_handled.joblib",
+            "rules": {
+                "strategies": strategies,
+            },
+            "settings": {
+                "show_inline": True,
+                "export": {
+                    "run": True,
+                    "as_csv": False,
+                    "export_path": "exports/reports/imputation/imputation_report.xlsx",
+                },
+                "plotting": {
+                    "run": True,
+                    "save_dir": "exports/plots/imputation/",
+                },
+                "checkpoint": {
+                    "run": True,
+                    "checkpoint_path": "exports/joblib/{run_id}/{run_id}_m07_df_imputed.joblib",
+                },
+            },
+        },
+    }
 
 
-def build_final_audit_template(df: pd.DataFrame, input_path_rel: str) -> str:
-    """Final audit config — inject column list and dtypes as comments."""
-    base = _load_template("final_audit_config.yaml")
-    dtype_list = [f"{col} ({df[col].dtype})" for col in df.columns]
-    header = textwrap.dedent(f"""\
-        # final_audit_config.yaml (generated template)
-        # Dataset: {input_path_rel}
-        # Columns and dtypes:
-        #   {chr(10).join('# ' + d for d in dtype_list)}
-        # Specify columns to drop and final certification rules below.
-        #
-        """)
-    return header + base
+def build_final_audit_config(
+    df: pd.DataFrame,
+    input_path_rel: str,
+    types: Dict[str, str],
+    cats: Dict[str, list],
+) -> Dict[str, Any]:
+    """Final audit config — fully inferred; drop_columns and disallowed_nulls are best-effort."""
+    # Columns M05 appends as outlier flags — drop them before certification
+    outlier_flag_cols = [c for c in df.columns if c.endswith(("_iqr_outlier", "_zscore_outlier"))]
+    # Columns with no nulls in the sample are candidates for disallowed_null_columns
+    no_null_cols = [c for c in df.columns if not df[c].isnull().any()]
+
+    return {
+        "run_id": "",
+        "notebook": True,
+        "logging": "auto",
+        "final_audit": {
+            "run": True,
+            "input_df_path": "exports/joblib/{run_id}/{run_id}_m07_df_imputed.joblib",
+            "raw_data_path": input_path_rel,
+            "final_edits": {
+                "run": True,
+                "drop_columns": outlier_flag_cols,
+                "rename_columns": {},
+                "coerce_dtypes": {},
+            },
+            "certification": {
+                "run": True,
+                "fail_on_error": True,
+                "rules": {
+                    "expected_columns": list(df.columns),
+                    "expected_types": types,
+                    "categorical_values": cats,
+                    "disallowed_null_columns": no_null_cols,
+                },
+            },
+            "settings": {
+                "show_inline": True,
+                "export_report": True,
+                "paths": {
+                    "report_excel": "exports/reports/final_audit/{run_id}_FinalAuditReport.xlsx",
+                    "report_joblib": "exports/reports/final_audit/{run_id}_FinalAuditReport.joblib",
+                    "checkpoint_csv": "data/processed/{run_id}_certified.csv",
+                    "checkpoint_joblib": "exports/joblib/{run_id}/{run_id}_certified.joblib",
+                    "plot_save_dir": "exports/plots/final_audit/{run_id}/",
+                },
+            },
+        },
+    }
 
 
 def build_master_config(modules_generated: list, outdir_rel: str = "config/generated") -> Dict[str, Any]:
@@ -516,22 +664,28 @@ def infer_configs(
         configs["outliers"] = yaml.safe_dump(data, sort_keys=False, allow_unicode=True)
 
     if "diagnostics" in requested:
-        configs["diagnostics"] = build_diag_template(df, rel_path)
+        data = build_diag_config(df, rel_path, types)
+        configs["diagnostics"] = yaml.safe_dump(data, sort_keys=False, allow_unicode=True)
 
     if "normalization" in requested:
-        configs["normalization"] = build_normalization_template(df, rel_path, cats)
+        data = build_normalization_config(df, rel_path, cats, types, numeric_cols)
+        configs["normalization"] = yaml.safe_dump(data, sort_keys=False, allow_unicode=True)
 
     if "duplicates" in requested:
-        configs["duplicates"] = build_dups_template(df, rel_path)
+        data = build_dups_config(df, rel_path, exclude_re)
+        configs["duplicates"] = yaml.safe_dump(data, sort_keys=False, allow_unicode=True)
 
     if "handling" in requested:
-        configs["handling"] = build_handling_template(df, rel_path, numeric_cols)
+        data = build_handling_config(rel_path, numeric_cols)
+        configs["handling"] = yaml.safe_dump(data, sort_keys=False, allow_unicode=True)
 
     if "imputation" in requested:
-        configs["imputation"] = build_imputation_template(df, rel_path)
+        data = build_imputation_config(df, rel_path)
+        configs["imputation"] = yaml.safe_dump(data, sort_keys=False, allow_unicode=True)
 
     if "final_audit" in requested:
-        configs["final_audit"] = build_final_audit_template(df, rel_path)
+        data = build_final_audit_config(df, rel_path, types, cats)
+        configs["final_audit"] = yaml.safe_dump(data, sort_keys=False, allow_unicode=True)
 
     # Write to disk if outdir provided
     if outdir:
