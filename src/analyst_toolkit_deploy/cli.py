@@ -117,39 +117,52 @@ def deploy_cmd(
 
 @app.command("infer-configs")
 def infer_configs_cmd(
-    input: Optional[Path] = typer.Option(None, help="Path to input CSV; defaults to config or single CSV under data/raw"),
+    input: Optional[Path] = typer.Option(None, help="Path to input CSV/parquet or gs:// URI; defaults to config or single CSV under data/raw"),
     outdir: Optional[Path] = typer.Option(None, help="Output directory for generated YAMLs; defaults to config/generated"),
+    modules: Optional[str] = typer.Option(
+        None,
+        help="Comma-separated module names to generate, e.g. validation,outliers,diagnostics. Default: all.",
+    ),
     sample_rows: Optional[int] = typer.Option(None, help="Sample first N rows for speed"),
     max_unique: int = typer.Option(30, help="Max unique values to consider a column categorical"),
     exclude_patterns: str = typer.Option("id|uuid|tag", help="Regex for columns to exclude from categorical/outlier inference"),
     detect_datetimes: bool = typer.Option(True, help="Attempt to infer datetimes from object columns"),
     datetime_hints: Optional[str] = typer.Option(None, help="Comma-separated hints: col:strftime e.g. capture_date:%Y-%m-%d"),
 ):
-    """Inspect a CSV and write suggested config YAMLs under `config/`.
+    """Inspect a dataset and write suggested config YAMLs under `config/generated/`.
 
-    If `--input` is not supplied, we try to infer the project CSV from
+    Accepts local CSV/parquet files or GCS URIs (gs://bucket/path).
+    If `--input` is not supplied, infers the project CSV from
     `config/run_toolkit_config.yaml` or a single CSV under `data/raw/`.
     """
     root = Path.cwd()
     hints = [s.strip() for s in (datetime_hints or "").split(",") if s.strip()]
-    out = ic.infer_configs(
+    modules_list = [m.strip() for m in modules.split(",")] if modules else None
+
+    # Resolve outdir — default to config/generated relative to cwd
+    resolved_outdir = str(outdir) if outdir else str(root / "config" / "generated")
+
+    configs = ic.infer_configs(
         root=str(root),
         input_path=str(input) if input else None,
-        outdir=str(outdir) if outdir else None,
+        modules=modules_list,
+        outdir=resolved_outdir,
         sample_rows=sample_rows,
         max_unique=max_unique,
         exclude_patterns=exclude_patterns,
         detect_datetimes=detect_datetimes,
         datetime_hints=hints,
     )
-    # Display a friendly relative path when possible without raising
-    disp = Path(out)
+
+    disp = Path(resolved_outdir)
     try:
         disp = disp.resolve().relative_to(root.resolve())
     except Exception:
-        # If resolution/relativization fails, fall back to raw path
         pass
-    print(f"[green]Wrote suggested YAMLs to:[/green] {disp}")
+
+    generated = list(configs.keys())
+    print(f"[green]Generated configs:[/green] {generated}")
+    print(f"[green]Wrote YAMLs + run_toolkit_config.yaml to:[/green] {disp}")
 
 
 def main_deploy() -> None:
